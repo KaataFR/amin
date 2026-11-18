@@ -2,6 +2,8 @@
 
 Horaires de prière, alertes à chaque prière, Coran, hadiths et guide de la prière (rite malikite).
 
+**Le site : https://kaatafr.github.io/amin/** (il s'installe aussi comme application depuis Chrome sur téléphone).
+
 ## Télécharger
 
 Les fichiers sont dans la dernière version publiée ([Releases](https://github.com/KaataFR/amin/releases/latest)) :
