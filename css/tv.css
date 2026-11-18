@@ -1,0 +1,40 @@
+/* Mode télé (app Google TV) : tout se pilote à la télécommande.
+   Les fonctions sans objet sur une télé (installateurs, impression, fichiers, boussole) sont masquées. */
+html.tv [data-view="telecharger"],
+html.tv #installBtn,
+html.tv #compassBtn,
+html.tv #locateBtn,
+html.tv #locateBtn + .status-line,
+html.tv .or-line,
+html.tv .import-row,
+html.tv #gamingHelp,
+html.tv #desktopOptions,
+html.tv [data-print],
+html.tv a[download],
+html.tv a[href="#apprendre-fiches"] { display: none !important; }
+
+/* Carte des alertes : le texte au-dessus, les boutons dessous */
+html.tv .alerts { grid-template-columns: 1fr; }
+html.tv .alerts-actions { justify-content: flex-start; }
+
+/* Le focus doit se voir de loin, depuis le canapé */
+html.tv :focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 4px;
+  border-radius: 8px;
+  box-shadow: 0 0 0 7px rgba(217, 183, 110, .16);
+}
+html.tv .sheet-tabs button:focus-visible { outline-offset: -4px; box-shadow: none; }
+html.tv .aya:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; box-shadow: none; }
+html.tv .input:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+html.tv .tab:focus-visible { outline-offset: 6px; }
+
+/* pas de curseur sur une télé */
+html.tv, html.tv * { cursor: none !important; }
+
+.tv-cmd {
+  margin: 10px 0 0; padding: 12px 14px; border-radius: 10px;
+  background: rgba(6, 13, 34, .55); border: 1px solid var(--gold-line);
+  font: 13px/1.6 ui-monospace, "DejaVu Sans Mono", monospace; color: #F5ECDC;
+  white-space: pre-wrap; word-break: break-all;
+}

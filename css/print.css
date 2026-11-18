@@ -1,0 +1,164 @@
+/* Amin · Fiches à imprimer (guide Apprendre)
+   Une fiche = un chapitre, sur papier A4 : texte noir sur fond blanc, illustrations réduites,
+   rien qui dépende des « couleurs d'arrière-plan » du navigateur (tout passe par des contours).
+   Les règles ne s'appliquent que lorsque la classe html.print-fiche est posée (bouton « Imprimer »,
+   Ctrl+P dans le guide, ou génération des PDF par tools/build-fiches.py). */
+
+/* Éléments réservés au papier : invisibles à l'écran */
+.p-brand, .p-foot { display: none; }
+
+@page { size: A4; margin: 13mm 13mm 15mm; }
+
+@media print {
+  html.print-fiche {
+    --ink: #fff; --ivory: #15181f; --mist: #565d6b; --gold: #8a6a1d; --zellige: #1c6f64;
+    --gold-line: rgba(138, 106, 29, .6); --gold-faint: rgba(138, 106, 29, .32);
+    background: #fff !important; color-scheme: light;
+  }
+  html.print-fiche body { background: #fff !important; color: #15181f; font-size: 10.5pt; line-height: 1.5; padding-bottom: 0 !important; }
+
+  /* On ne garde que le chapitre */
+  html.print-fiche #splash,
+  html.print-fiche #stage,
+  html.print-fiche .frieze,
+  html.print-fiche .bottom-nav,
+  html.print-fiche .top,
+  html.print-fiche .learn-nav,
+  html.print-fiche .l-pager,
+  html.print-fiche .l-credit,
+  html.print-fiche .l-actions,
+  html.print-fiche .l-play,
+  html.print-fiche .l-explain,
+  html.print-fiche .qv-top,
+  html.print-fiche .tasbih,
+  html.print-fiche .l-note svg,
+  html.print-fiche .step-fig.has-img::after,
+  html.print-fiche #figZoom,
+  html.print-fiche .toast { display: none !important; }
+  html.print-fiche main.view:not(#view-apprendre) { display: none !important; }
+  html.print-fiche #view-apprendre { display: block !important; background: #fff; padding: 0; }
+  html.print-fiche .learn-wrap { display: block; padding: 0; max-width: none; }
+  html.print-fiche .learn-content { max-width: none; }
+  html.print-fiche * { animation: none !important; transition: none !important; box-shadow: none !important; text-shadow: none !important; }
+
+  /* Entête de la fiche */
+  html.print-fiche .p-brand { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 4mm; padding-bottom: 2mm; border-bottom: .3mm solid #1B3566; color: #1B3566; font-size: 9.5pt; letter-spacing: .02em; }
+  html.print-fiche .p-brand b { font-weight: 600; font-size: 11pt; }
+  html.print-fiche .l-head { padding: 0 0 4mm; margin: 0 0 5mm; border-bottom: .3mm solid var(--gold-line); }
+  html.print-fiche .l-step { font-size: 9.5pt; color: var(--mist); }
+  html.print-fiche .l-head h2 { font-size: 25pt; font-weight: 400; margin: 1mm 0 0; color: #1B3566; }
+  html.print-fiche .l-ar { font-size: 20pt; color: var(--gold); margin: 1mm 0 0; line-height: 1.5; }
+  html.print-fiche .l-lead { font-size: 11pt; line-height: 1.55; color: #2a2f3a; margin: 3mm 0 0; max-width: none; }
+  html.print-fiche .p-foot { display: block; margin: 8mm 0 0; padding-top: 2mm; border-top: .2mm solid var(--gold-faint); color: var(--mist); font-size: 8.5pt; }
+
+  /* Texte courant */
+  html.print-fiche .l-h { font-size: 14pt; margin: 7mm 0 2.5mm; color: #1B3566; break-after: avoid; }
+  html.print-fiche .l-p { font-size: 10.5pt; line-height: 1.55; color: #20242d; margin: 2mm 0; max-width: none; orphans: 3; widows: 3; }
+  html.print-fiche .l-list { font-size: 10.5pt; line-height: 1.5; color: #20242d; margin: 2mm 0; padding-left: 5.5mm; }
+  html.print-fiche .l-list li { break-inside: avoid; }
+  html.print-fiche .l-list li + li { margin-top: 1.2mm; }
+  html.print-fiche .l-list li::marker { color: var(--gold); }
+  html.print-fiche .l-note { display: block; margin: 4mm 0; padding: 2.5mm 4mm; border: .25mm solid var(--gold-line); border-left: 1.1mm solid var(--gold); border-radius: 1.5mm; background: none; color: #20242d; break-inside: avoid; }
+  html.print-fiche .l-note p { font-size: 10pt; line-height: 1.5; }
+
+  /* Cartes et glossaire */
+  html.print-fiche .l-cards { gap: 3mm; }
+  html.print-fiche .l-card { padding: 3mm 4mm; border: .25mm solid var(--gold-line); border-radius: 2mm; background: none; break-inside: avoid; }
+  html.print-fiche .l-card h4 { font-size: 11pt; color: #15181f; margin: 0 0 1mm; }
+  html.print-fiche .l-card p { font-size: 9.8pt; line-height: 1.5; color: #2f3541; }
+  html.print-fiche .l-gloss { gap: 0 8mm; }
+  html.print-fiche .l-gloss > div { padding: 2.5mm 0; border-bottom: .2mm solid var(--gold-faint); break-inside: avoid; }
+  html.print-fiche .l-gloss dt [lang="ar"] { font-size: 14pt; color: var(--gold); }
+  html.print-fiche .l-gloss dd { font-size: 9.8pt; color: #2f3541; }
+
+  /* Textes à dire : arabe, phonétique, traduction */
+  html.print-fiche .say { margin: 3mm 0 0; padding: 1.5mm 0 1.5mm 4mm; border-left: .6mm solid var(--gold); break-inside: avoid; }
+  html.print-fiche .say-ar { font-size: 17pt; line-height: 1.85; color: #000; }
+  html.print-fiche .say-ph { font-size: 11pt; line-height: 1.45; color: #6f5413; margin-top: .5mm; }
+  html.print-fiche .say-fr { font-size: 10.5pt; line-height: 1.5; color: #20242d; margin-top: .5mm; }
+  html.print-fiche .say-src { font-size: 8.5pt; color: var(--mist); margin-top: 1mm; }
+  html.print-fiche .dhikr { padding: 1mm 4mm 2.5mm; border: .25mm solid var(--gold-line); border-radius: 2.5mm; background: none; break-inside: avoid; }
+  html.print-fiche .dhikr .say { border-left: 0; padding-left: 0; }
+  html.print-fiche .l-dhikr { gap: 3mm; }
+  html.print-fiche .dhikr > .tag-count { top: 3mm; left: 4mm; }
+
+  /* Versets */
+  html.print-fiche .qblock { margin: 3mm 0; padding: 3mm 4.5mm; border: .25mm solid var(--gold-line); border-radius: 2.5mm; background: none; break-inside: avoid; }
+  html.print-fiche .qv + .qv { margin-top: 3mm; padding-top: 3mm; border-top: .2mm solid var(--gold-faint); }
+  html.print-fiche .qv-ar { font-size: 16pt; line-height: 2; color: #000; }
+  html.print-fiche .qv-mark { color: var(--gold); }
+  html.print-fiche .qv .say-ph, html.print-fiche .qv .say-fr { font-size: 10.5pt; }
+
+  /* Pastilles */
+  html.print-fiche .tag { font-size: 8.5pt; padding: .4mm 2.4mm; background: none; }
+  html.print-fiche .tag-must { color: #6f5413; border-color: var(--gold); }
+  html.print-fiche .tag-sunna { color: #1c6f64; border-color: #1c6f64; }
+  html.print-fiche .tag-count { color: #15181f; border-color: #8b93a1; background: none; }
+
+  /* Étapes illustrées */
+  html.print-fiche .l-steps { gap: 3mm; }
+  html.print-fiche .step,
+  html.print-fiche .l-steps.is-body .step { grid-template-columns: 31mm minmax(0, 1fr); gap: 5mm; padding: 3mm 4mm 3mm 3mm; border: .25mm solid var(--gold-line); border-radius: 2.5mm; background: none; break-inside: avoid; }
+  /* Une étape longue (verset, tachahhoud…) peut se couper entre deux pages ; les petites restent d'un bloc */
+  html.print-fiche .step:has(.qblock),
+  html.print-fiche .l-steps.is-body .step:has(.qblock) { break-inside: auto; }
+  html.print-fiche .qblock { break-inside: auto; }
+  html.print-fiche .qv { break-inside: avoid; }
+  html.print-fiche .step-fig { position: static; padding: 0; border-radius: 2mm; background: none; align-self: start; width: 31mm; }
+  html.print-fiche .step-fig.has-img { cursor: default; outline: 0; overflow: hidden; border-radius: 2mm; }
+  html.print-fiche .step-fig .fig-img { border-radius: 2mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  /* Sans photo, le dessin de repli reste sur sa tuile sombre */
+  html.print-fiche .step-fig:not(.has-img) { padding: 1.5mm; background: #0B1730; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html.print-fiche .step-n { width: 7mm; height: 7mm; font-size: 10.5pt; background: none; color: #1B3566; border: .4mm solid #1B3566; }
+  html.print-fiche .step h4 { font-size: 13pt; color: #15181f; }
+  html.print-fiche .step-tags { margin-top: 2mm; gap: 1.6mm; }
+  html.print-fiche .step-text { font-size: 10.5pt; line-height: 1.5; color: #20242d; margin-top: 2mm; }
+  html.print-fiche .step-after { font-size: 9.8pt; color: var(--mist); margin-top: 2mm; }
+  html.print-fiche .step .say { margin-top: 2mm; }
+  html.print-fiche .step .say-ar { font-size: 16pt; }
+
+  /* Tableau */
+  html.print-fiche .l-table-wrap { overflow: visible; border: .25mm solid var(--gold-line); border-radius: 2mm; break-inside: avoid; }
+  html.print-fiche .l-table { min-width: 0; font-size: 10pt; }
+  html.print-fiche .l-table th, html.print-fiche .l-table td { padding: 2.2mm 3mm; border-bottom: .2mm solid var(--gold-faint); }
+  html.print-fiche .l-table thead th { background: none; color: #1B3566; font-size: 9.5pt; border-bottom: .3mm solid var(--gold-line); }
+  html.print-fiche .l-table tbody th { color: #6f5413; }
+  html.print-fiche .l-table td:nth-child(2) { font-size: 12pt; color: #15181f; }
+  html.print-fiche .l-table.is-plain td:nth-child(2) { font-size: inherit; }
+
+  /* Appel à la prière */
+  html.print-fiche .l-adhan { border: .25mm solid var(--gold-line); border-radius: 2.5mm; }
+  html.print-fiche .l-adhan li { padding: 2.5mm 4mm; border-bottom: .2mm solid var(--gold-faint); break-inside: avoid; background: none; }
+  html.print-fiche .l-adhan li.is-fajr { background: none; border-left: 1mm solid var(--zellige); }
+  html.print-fiche .l-play-gap { display: none; }
+  html.print-fiche .ad-ar { font-size: 16pt; color: #000; }
+
+  /* Les cinq piliers : le sommaire devient une simple rangée */
+  html.print-fiche .l-pillars { gap: 2.5mm; margin: 4mm 0; }
+  html.print-fiche .l-pillar { padding: 7mm 1.5mm 3mm; border: .3mm solid var(--gold-line); border-radius: 18mm 18mm 2mm 2mm; background: none; transform: none; break-inside: avoid; }
+  html.print-fiche .pn { width: 6.5mm; height: 6.5mm; font-size: 10pt; background: none; color: #1B3566; border: .35mm solid #1B3566; }
+  html.print-fiche .pt { font-size: 10pt; color: #15181f; }
+  html.print-fiche .pa { font-size: 14pt; color: var(--gold); }
+  html.print-fiche .l-pillar-h { margin: 9mm 0 3mm; padding-top: 4mm; border-top: .3mm solid var(--gold-line); grid-template-columns: 9mm minmax(0, 1fr) auto; gap: 4mm; break-after: avoid; }
+  html.print-fiche .l-pillar-h .pn { width: 9mm; height: 9mm; font-size: 12pt; }
+  html.print-fiche .pl-tx h3 { font-size: 16pt; color: #1B3566; }
+  html.print-fiche .pl-tx p { font-size: 10pt; color: var(--mist); }
+  html.print-fiche .pl-ar { font-size: 20pt; color: var(--gold); }
+
+  /* Mémo de la prière : une rangée par étape */
+  html.print-fiche .memo { border-top: .3mm solid var(--gold-line); }
+  html.print-fiche .memo-row { grid-template-columns: 7mm 15mm 40mm minmax(0, 1fr); gap: 4mm; padding: 2.2mm 0; border-bottom: .2mm solid var(--gold-faint); break-inside: avoid; }
+  html.print-fiche .memo-fig img { border-radius: 1.6mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html.print-fiche .memo-what h4 { font-size: 10.5pt; color: #15181f; }
+  html.print-fiche .memo-what .step-tags { margin-top: 1.2mm; gap: 1mm; }
+  html.print-fiche .memo-what .tag { font-size: 7.5pt; padding: .2mm 1.8mm; border-radius: 1.6mm; }
+  html.print-fiche .memo-say { gap: 1.6mm; }
+  html.print-fiche .memo-f + .memo-f { padding-top: 1.6mm; border-top: .2mm dotted var(--gold-faint); }
+  html.print-fiche .memo-ar { font-size: 13.5pt; line-height: 1.7; color: #000; }
+  html.print-fiche .memo-ph { font-size: 8.8pt; line-height: 1.4; color: #6f5413; }
+  html.print-fiche .memo-q { font-size: 9pt; color: var(--mist); }
+  html.print-fiche .l-head .l-back { color: inherit; }
+  html.print-fiche .fiches, html.print-fiche .fiche { display: none; }
+
+  html.print-fiche a { color: inherit; text-decoration: none; }
+}

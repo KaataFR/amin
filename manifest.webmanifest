@@ -1,0 +1,16 @@
+{
+  "name": "Amin · Horaires de prière",
+  "short_name": "Amin",
+  "description": "Horaires de prière par ville avec alertes, Coran et guide de la prière.",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0B1730",
+  "theme_color": "#0B1730",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

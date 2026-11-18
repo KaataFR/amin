@@ -1,0 +1,105 @@
+/* =====================================================================
+   Mouvement : tout ce qui bouge dans Amin, au même endroit.
+   Le principe : un seul moment mis en scène (l'écran de chargement,
+   dans index.html), puis des gestes qui répondent à une action
+   (changer de page, ouvrir une feuille, appuyer sur un bouton).
+   Tout est coupé ou réduit si l'appareil demande moins d'animations,
+   et rien de ce fichier n'est nécessaire pour utiliser le site.
+   ===================================================================== */
+
+/* ---------- Barre de progression en haut ---------- */
+.fx-bar { position: fixed; z-index: 9000; top: 0; left: 0; right: 0; height: 2px; pointer-events: none; opacity: 0; }
+.fx-bar i { display: block; height: 100%; width: 100%; transform-origin: left; transform: scaleX(0);
+  background: linear-gradient(90deg, rgba(217, 183, 110, 0), var(--gold) 35%, #F2DCA3);
+  box-shadow: 0 0 10px rgba(217, 183, 110, .55); }
+.fx-bar.run { opacity: 1; }
+.fx-bar.run i { animation: fxBar .75s cubic-bezier(.25, .7, .2, 1) forwards; }
+.fx-bar.busy { opacity: 1; }
+.fx-bar.busy i { animation: fxBusy 1.6s cubic-bezier(.4, 0, .2, 1) infinite; transform-origin: left; }
+@keyframes fxBar { 0% { transform: scaleX(0); opacity: 1; } 65% { transform: scaleX(.92); opacity: 1; } 100% { transform: scaleX(1); opacity: 0; } }
+@keyframes fxBusy { 0% { transform: translateX(-100%) scaleX(.4); } 100% { transform: translateX(100%) scaleX(.4); } }
+
+/* ---------- Indicateur d'onglet qui glisse ---------- */
+.tabs { position: relative; }
+.tab-ink { position: absolute; left: 0; top: 0; width: 22px; height: 2px; border-radius: 2px; background: var(--gold);
+  transform: translate(var(--x, 0px), var(--y, 0px)); pointer-events: none; opacity: 0; }
+html.has-ink .tab-ink { opacity: 1; }
+html.has-ink .tab[aria-current="page"]::after { display: none; }
+.tab-ink.is-moving { transition: transform .26s cubic-bezier(.3, .8, .2, 1), width .26s cubic-bezier(.3, .8, .2, 1); }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ---------- Arrivée d'une page ---------- */
+  main.view.view-in { animation: viewFade .4s ease backwards; }
+  main.view.view-in .stg { animation: stgIn .7s cubic-bezier(.2, .75, .2, 1) backwards; animation-delay: calc(var(--i, 0) * 70ms + 30ms); }
+  main.view.view-in[data-view="coran"] .stg { animation: none; }
+  @keyframes viewFade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes stgIn { from { opacity: 0; transform: translate3d(calc(var(--dir, 0) * 26px), 20px, 0); } to { opacity: 1; transform: none; } }
+
+  /* ---------- Apparition au défilement ---------- */
+  .rv { opacity: 0; transform: translate3d(0, 26px, 0); transition: opacity .8s ease, transform .9s cubic-bezier(.2, .75, .2, 1); }
+  .rv.rv-in { opacity: 1; transform: none; }
+
+  /* ---------- Course du soleil : mise en place ---------- */
+  #arc.arc-intro #arcPaths { animation: arcFade 1.2s ease .15s backwards; }
+  #arc.arc-intro #arcLabels { animation: arcFade 1s ease .9s backwards; }
+  #arc.arc-intro #arcSun { animation: sunRise 1.5s cubic-bezier(.2, .8, .2, 1) .35s backwards; }
+  #arc.arc-intro #arcMarkers .marker { transform-box: fill-box; transform-origin: center; animation: markIn .65s cubic-bezier(.3, 1.45, .5, 1) backwards; }
+  #arc.arc-intro #arcMarkers g:nth-child(1) .marker { animation-delay: .3s; }
+  #arc.arc-intro #arcMarkers g:nth-child(2) .marker { animation-delay: .42s; }
+  #arc.arc-intro #arcMarkers g:nth-child(3) .marker { animation-delay: .54s; }
+  #arc.arc-intro #arcMarkers g:nth-child(4) .marker { animation-delay: .66s; }
+  #arc.arc-intro #arcMarkers g:nth-child(5) .marker { animation-delay: .78s; }
+  #arc.arc-intro #arcMarkers g:nth-child(6) .marker { animation-delay: .9s; }
+  @keyframes arcFade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes sunRise { from { opacity: 0; transform: translateY(46px) scale(.8); } to { opacity: 1; transform: none; } }
+  @keyframes markIn { from { opacity: 0; transform: scale(0) rotate(-90deg); } to { opacity: 1; transform: none; } }
+
+  /* ---------- Cartes de prière ---------- */
+  .arch { transition: opacity .3s ease, translate .35s cubic-bezier(.2, .8, .2, 1); }
+  .arch:hover { translate: 0 -4px; }
+  .arch:hover .arch-shape path { fill: rgba(27, 53, 102, .5); stroke: rgba(217, 183, 110, .7); }
+  .arch.is-next:hover .arch-shape path { fill: rgba(217, 183, 110, .2); }
+  body.boot .arch { animation: archIn .75s cubic-bezier(.2, .8, .2, 1) backwards; }
+  body.boot .arch:nth-child(1) { animation-delay: .05s; }
+  body.boot .arch:nth-child(2) { animation-delay: .13s; }
+  body.boot .arch:nth-child(3) { animation-delay: .21s; }
+  body.boot .arch:nth-child(4) { animation-delay: .29s; }
+  body.boot .arch:nth-child(5) { animation-delay: .37s; }
+  body.boot .arch:nth-child(6) { animation-delay: .45s; }
+  @keyframes archIn { from { opacity: 0; translate: 0 34px; } to { opacity: 1; translate: 0 0; } }
+  .arch.is-next .arch-shape path { animation: archBreath 4.2s ease-in-out infinite; }
+  @keyframes archBreath { 0%, 100% { fill: rgba(217, 183, 110, .10); } 50% { fill: rgba(217, 183, 110, .20); } }
+
+  /* ---------- Gestes : appuyer, survoler ---------- */
+  .btn, .chip-btn, .arch-toggle, .chip { transition: background .2s ease, border-color .2s ease, color .2s ease, scale .16s ease, translate .22s ease, box-shadow .28s ease; }
+  .btn:active, .chip-btn:active, .arch-toggle:active, .chip:active { scale: .96; }
+  .btn-primary:hover { translate: 0 -1px; box-shadow: 0 8px 22px -6px rgba(217, 183, 110, .55); }
+  .btn-primary:active { translate: 0 0; box-shadow: none; }
+  .tab:active { scale: .95; }
+  .tab { transition: color .2s ease, background .2s ease, scale .16s ease; }
+  .bottom-nav a { transition: color .2s ease, background .25s ease, scale .16s ease; }
+  .bottom-nav a:active { scale: .92; }
+  .bottom-nav a[aria-current="page"] svg { animation: navPop .5s cubic-bezier(.3, 1.5, .5, 1); }
+  @keyframes navPop { 0% { transform: scale(.7) translateY(3px); } 100% { transform: none; } }
+  .brand svg { transition: rotate .8s cubic-bezier(.2, .8, .2, 1); }
+  .brand:hover svg { rotate: 90deg; }
+
+  /* ---------- Feuilles et fenêtres ---------- */
+  dialog.sheet[open] { animation: sheetIn .4s cubic-bezier(.2, .85, .2, 1); }
+  dialog.compass-dlg[open], dialog.fig-zoom[open] { animation: popIn .34s cubic-bezier(.2, .9, .3, 1.05); }
+  dialog[open]::backdrop { animation: bdIn .32s ease; }
+  @keyframes sheetIn { from { opacity: 0; transform: translateX(34px); } to { opacity: 1; transform: none; } }
+  @keyframes popIn { from { opacity: 0; transform: translateY(14px) scale(.96); } to { opacity: 1; transform: none; } }
+  @keyframes bdIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* ---------- Texte en cours de chargement ---------- */
+  .hint.is-wait, .qblock > .hint:only-child { background: linear-gradient(90deg, var(--mist) 30%, var(--ivory) 50%, var(--mist) 70%) 0 0 / 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shimmer 1.6s linear infinite; }
+  @keyframes shimmer { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+}
+
+/* ---------- Mouvement réduit : tout reste visible, sans bouger ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .rv { opacity: 1; transform: none; }
+  .fx-bar { display: none; }
+  .tab-ink.is-moving { transition: none; }
+}

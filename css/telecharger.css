@@ -1,0 +1,113 @@
+/* Onglet « Télécharger » : trois grandes arches (Windows, Android, télévision), comme celles des prières. */
+.dl { background: var(--ink); }
+.dl-wrap { max-width: calc(1180px + 2 * var(--gutter)); padding-top: 34px; padding-bottom: 80px; }
+
+.dl-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 34px; align-items: stretch; }
+.dl-card { position: relative; isolation: isolate; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 92px 28px 28px; min-width: 0; }
+.dl-card .arch-shape path { fill: rgba(27, 53, 102, .30); stroke: var(--gold-line); }
+.dl-card.is-win .arch-shape path, .dl-grid[data-os="android"] .dl-card.is-and .arch-shape path { fill: rgba(217, 183, 110, .10); stroke: var(--gold); }
+.dl-grid[data-os="android"] .dl-card.is-win .arch-shape path { fill: rgba(27, 53, 102, .30); stroke: var(--gold-line); }
+.dl-grid[data-os="android"] .dl-card.is-and { order: -1; }
+
+.dl-icon { position: absolute; top: 34px; left: 50%; width: 46px; height: 46px; translate: -50% 0; color: var(--gold); }
+.dl-card h2 { margin: 0; font-size: 28px; font-weight: 420; line-height: 1.2; }
+.dl-meta { margin: 4px 0 0; font-size: 15.5px; color: var(--mist); }
+
+.dl-feats, .dl-steps { list-style: none; margin: 22px 0 0; padding: 0; display: grid; gap: 12px; text-align: left; width: 100%; max-width: 330px; font-size: 16px; line-height: 1.45; }
+.dl-feats li { position: relative; padding-left: 22px; }
+.dl-feats li::before { content: ''; position: absolute; left: 3px; top: .55em; width: 7px; height: 7px; rotate: 45deg; background: var(--gold); }
+.dl-steps { counter-reset: dlstep; }
+.dl-steps li { position: relative; padding-left: 36px; counter-increment: dlstep; }
+.dl-steps li::before { content: counter(dlstep); position: absolute; left: 0; top: -.05em; width: 25px; height: 25px; display: grid; place-items: center; border: 1px solid var(--gold-line); border-radius: 50%; color: var(--gold); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+
+.dl-btn { position: relative; overflow: hidden; width: 100%; max-width: 330px; margin-top: auto; }
+.dl-feats + .dl-btn, .dl-steps + .dl-btn { margin-top: 26px; }
+.dl-card .dl-feats, .dl-card .dl-steps { margin-bottom: 26px; }
+.dl-btn .dl-txt { position: relative; }
+.dl-btn .dl-fill { position: absolute; left: 0; top: 0; bottom: 0; width: var(--p, 0%); background: rgba(26, 20, 6, .22); transition: width .25s ease-out; }
+.dl-btn:disabled { opacity: .55; cursor: not-allowed; }
+.dl-btn.is-busy { cursor: progress; }
+.dl-btn[hidden] { display: none; }
+
+.dl-status { margin: 12px 0 0; min-height: 22px; font-size: 14.5px; color: var(--mist); max-width: 330px; }
+.dl-status.is-err { color: var(--danger); }
+.dl-status.is-ok { color: var(--zellige); }
+.dl-note { margin: 4px 0 0; max-width: 330px; font-size: 14px; line-height: 1.5; color: var(--mist); }
+.dl-card .dl-note { margin-top: auto; padding-top: 6px; }
+
+.dl-help { margin-top: 8px; width: 100%; max-width: 330px; text-align: left; font-size: 14.5px; color: var(--mist); }
+.dl-help summary { cursor: pointer; text-align: center; color: var(--mist); text-decoration: underline; text-decoration-color: rgba(174, 187, 211, .35); text-underline-offset: 3px; }
+.dl-help summary:hover { color: var(--ivory); }
+.dl-help ol { margin: 10px 0 0; padding-left: 22px; display: grid; gap: 6px; }
+.dl-help p { margin: 10px 0 0; line-height: 1.5; }
+.dl-hash code { display: block; margin-top: 4px; word-break: break-all; font-size: 12.5px; color: var(--ivory); }
+
+.dl-more { margin-top: 56px; padding-top: 26px; border-top: 1px solid var(--gold-faint); }
+.dl-more h2 { margin: 0 0 14px; font-size: 22px; font-weight: 450; }
+.dl-more-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px; }
+.dl-more h3 { margin: 0 0 4px; font-size: 17px; font-weight: 450; }
+.dl-more p { margin: 0; color: var(--mist); line-height: 1.55; }
+
+/* Télévision : lien vers le guide, guide d'installation et compatibilité */
+.dl-link { margin-top: 8px; background: none; border: 0; padding: 4px 2px; color: var(--mist); font: inherit; font-size: 14.5px; cursor: pointer; text-decoration: underline; text-decoration-color: rgba(174, 187, 211, .35); text-underline-offset: 3px; }
+.dl-link:hover { color: var(--ivory); }
+.dl-card .dl-hash { max-width: 330px; margin: 8px 0 0; font-size: 13px; color: var(--mist); }
+.dl-tv { margin-top: 56px; padding-top: 26px; border-top: 1px solid var(--gold-faint); scroll-margin-top: 90px; }
+.dl-tv > h2 { margin: 0 0 8px; font-size: 26px; font-weight: 450; }
+.dl-tv-lead { margin: 0; max-width: 72ch; color: var(--mist); line-height: 1.6; }
+.dl-tv-h { margin: 34px 0 14px; font-size: 19px; font-weight: 450; color: var(--gold); }
+.dl-compat { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.dl-compat-col { border: 1px solid var(--gold-faint); border-radius: 18px; padding: 18px 22px 20px; background: rgba(27, 53, 102, .16); }
+.dl-compat-col h4 { margin: 0 0 10px; font-size: 16px; font-weight: 500; }
+.dl-compat-col h4 + ul { margin-bottom: 0; }
+.dl-compat-col ul + h4 { margin-top: 18px; }
+.dl-compat-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; line-height: 1.5; color: var(--mist); }
+.dl-compat-col li { position: relative; padding-left: 22px; }
+.dl-compat-col li::before { content: ''; position: absolute; left: 3px; top: .62em; width: 7px; height: 7px; rotate: 45deg; background: var(--zellige); }
+.dl-compat-col.is-maybe li::before { background: var(--mist); }
+.dl-compat-col.is-maybe ul + h4 + ul li::before { background: var(--danger); }
+.dl-compat-col b { color: var(--ivory); font-weight: 500; }
+.dl-tv-tip { margin: 14px 0 0; color: var(--mist); font-size: 15px; }
+.dl-ways { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.dl-way { border: 1px solid var(--gold-faint); border-radius: 18px; padding: 18px 22px 20px; background: rgba(27, 53, 102, .16); }
+.dl-way h4 { margin: 0; font-size: 17px; font-weight: 500; }
+.dl-way-s { margin: 2px 0 12px; color: var(--mist); font-size: 14.5px; }
+.dl-way ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; line-height: 1.5; color: var(--mist); font-size: 15px; }
+.dl-way a { color: var(--gold); }
+.dl-tv code { font-size: .9em; color: var(--ivory); background: rgba(245, 236, 220, .07); border-radius: 5px; padding: 1px 5px; word-break: break-all; }
+.dl-after { margin: 0; padding-left: 22px; display: grid; gap: 10px; line-height: 1.55; color: var(--mist); max-width: 86ch; }
+
+/* Une appli est déjà là : l'onglet n'a plus d'utilité. */
+html.is-app a[data-view="telecharger"] { display: none; }
+
+@media (max-width: 1060px) {
+  .dl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dl-card.is-tv { grid-column: 1 / -1; }
+  .dl-ways { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .dl-wrap { padding-top: 16px; padding-bottom: 40px; }
+  .dl-grid, .dl-more-grid, .dl-compat { grid-template-columns: minmax(0, 1fr); }
+  .dl-grid { gap: 22px; margin-top: 26px; }
+  .dl-card { padding: 84px 20px 24px; }
+  .dl-more { margin-top: 40px; }
+}
+@media (max-width: 700px) {
+  .bottom-nav { grid-template-columns: repeat(6, 1fr); }
+  html.is-app .bottom-nav { grid-template-columns: repeat(5, 1fr); }
+  .bottom-nav a { min-width: 0; }
+}
+@media (max-width: 360px) { .bottom-nav a { font-size: 10.5px; } }
+
+/* ---------- Barre du haut : six onglets au lieu de cinq ---------- */
+.tab .lbl-s { display: none; }
+@media (min-width: 861px) { .tab { padding: 0 12px; } }
+@media (min-width: 701px) and (max-width: 1130px) { .tab .lbl-l { display: none; } .tab .lbl-s { display: inline; } }
+@media (min-width: 701px) and (max-width: 1000px) {
+  #volBtn .lbl, #settingsBtn .lbl { display: none; }
+  #volBtn, #settingsBtn { padding: 8px 11px; }
+}
+@media (min-width: 1221px) { .tab { padding: 0 11px; } }
+@media (min-width: 701px) and (max-width: 960px) { .tab { padding: 0 9px; font-size: 15px; } }
+@media (min-width: 701px) and (max-width: 790px) { .tab { padding: 0 7px; font-size: 14.5px; } }
+@media (min-width: 1221px) { .tabs { gap: 1px; } }

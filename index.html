@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amin · Horaires de prière</title>
+<meta name="description" content="Horaires de prière par ville avec alertes, lecture du Coran et guide de la prière.">
+<meta name="theme-color" content="#0B1730">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/coran.css">
+<link rel="stylesheet" href="css/apprendre.css">
+<link rel="stylesheet" href="css/reciter.css">
+<link rel="stylesheet" href="css/hadiths.css">
+<link rel="stylesheet" href="css/tafsir.css">
+<link rel="stylesheet" href="css/suivi.css">
+<link rel="stylesheet" href="css/telecharger.css">
+<link rel="stylesheet" href="css/motion.css">
+<link rel="stylesheet" href="css/tv.css">
+<link rel="stylesheet" href="css/print.css" media="print">
+<script>
+/* Écran de chargement : décidé avant le premier affichage pour éviter tout clignotement. */
+(function () {
+  try {
+    var d = document.documentElement, q = location.search, auto = navigator.webdriver && !/[?&]fx\b/.test(q);
+    if (!auto) d.classList.add('fx');
+    if (window.AminTV) d.classList.add('tv');
+    if (window.mawqutDesktop || window.AminTV || navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches)) d.classList.add('is-app');
+    if (!auto && !/[?&]nosplash\b/.test(q)) {
+      d.classList.add('has-splash');
+      if (sessionStorage.getItem('amin.seen')) d.classList.add('splash-short');
+    }
+  } catch (e) {}
+})();
+</script>
+<style id="splash-css">
+#splash { display: none; }
+html.has-splash #splash {
+  display: grid; place-items: center; position: fixed; inset: 0; z-index: 9999; overflow: hidden; color: #F5ECDC;
+  background: radial-gradient(ellipse 80% 62% at 50% 40%, #1A3068 0%, #0F2047 38%, #0B1730 70%, #070F24 100%);
+  animation: splashFailsafe .01s 6.5s forwards;
+}
+html.has-splash:not(.splash-done) body { overflow: hidden; }
+html.has-splash { --k: 1; }
+html.has-splash.splash-short { --k: .5; }
+#splash::before { content: ''; position: absolute; left: 50%; top: 40%; width: min(120vw, 780px); aspect-ratio: 1; translate: -50% -50%;
+  background: radial-gradient(circle, rgba(217, 183, 110, .17) 0%, rgba(217, 183, 110, 0) 62%); opacity: 0; animation: smGlow calc(1.6s * var(--k)) ease .1s forwards; }
+.splash-core { position: relative; display: grid; justify-items: center; translate: 0 -3vh; }
+.splash-mark { width: 104px; height: 104px; overflow: visible; filter: drop-shadow(0 0 16px rgba(217, 183, 110, .3)); }
+.splash-mark g { transform-origin: 60px 60px; animation: smTurn calc(1.5s * var(--k)) cubic-bezier(.2, .75, .2, 1) both; }
+.splash-mark rect { stroke-dasharray: 1; stroke-dashoffset: 1; animation: smDraw calc(.95s * var(--k)) cubic-bezier(.6, 0, .2, 1) forwards; }
+.splash-mark .sm-b { animation-delay: calc(.2s * var(--k)); }
+.splash-mark circle { transform-box: fill-box; transform-origin: center; transform: scale(0); animation: smDot calc(.7s * var(--k)) cubic-bezier(.3, 1.6, .5, 1) calc(.65s * var(--k)) forwards; }
+.splash-ar { margin: 18px 0 0; font-family: 'Amiri', 'Noto Naskh Arabic', 'Traditional Arabic', serif; font-size: 46px; line-height: 1.3; color: #D9B76E; opacity: 0; animation: smRise calc(.8s * var(--k)) cubic-bezier(.2, .8, .2, 1) calc(.9s * var(--k)) forwards; }
+.splash-latin { margin: 12px 0 0; font: 400 15px/1 'Jost', 'Avenir Next', 'Segoe UI', system-ui, sans-serif; letter-spacing: .5em; text-indent: .5em; color: #AEBBD3; opacity: 0; animation: smRise calc(.8s * var(--k)) cubic-bezier(.2, .8, .2, 1) calc(1.05s * var(--k)) forwards; }
+.splash-bar { position: absolute; left: 50%; bottom: calc(9vh + env(safe-area-inset-bottom, 0px)); width: min(170px, 42vw); height: 2px; translate: -50% 0; border-radius: 2px; background: rgba(217, 183, 110, .16); overflow: hidden; }
+.splash-bar i { display: block; height: 100%; background: #D9B76E; transform-origin: left; transform: scaleX(0); animation: smBar calc(1.9s * var(--k)) cubic-bezier(.3, .6, .25, 1) forwards; }
+#splash.is-out { opacity: 0; visibility: hidden; transition: opacity .6s ease .12s, visibility 0s .72s; }
+#splash.is-out .splash-core { opacity: 0; scale: 1.1; transition: opacity .38s ease, scale .7s cubic-bezier(.4, 0, .2, 1); }
+#splash.is-out .splash-bar { opacity: 0; transition: opacity .25s ease; }
+@keyframes smDraw { to { stroke-dashoffset: 0; } }
+@keyframes smTurn { from { transform: rotate(-30deg) scale(.86); } to { transform: none; } }
+@keyframes smDot { to { transform: scale(1); } }
+@keyframes smRise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes smBar { 0% { transform: scaleX(0); } 100% { transform: scaleX(.9); } }
+@keyframes smGlow { 0% { opacity: 0; scale: .7; } 100% { opacity: 1; scale: 1; } }
+@keyframes splashFailsafe { to { opacity: 0; visibility: hidden; pointer-events: none; } }
+@media (prefers-reduced-motion: reduce) {
+  html.has-splash #splash::before, .splash-mark g, .splash-mark rect, .splash-mark circle, .splash-ar, .splash-latin, .splash-bar i { animation: none; }
+  html.has-splash #splash::before { opacity: 1; }
+  .splash-mark rect { stroke-dashoffset: 0; }
+  .splash-mark circle { transform: none; }
+  .splash-ar, .splash-latin { opacity: 1; }
+  .splash-bar i { transform: scaleX(.9); }
+  #splash.is-out { transition-duration: .3s; }
+  #splash.is-out .splash-core { scale: 1; transition: none; }
+}
+</style>
+<noscript><style>#splash { display: none !important; }</style></noscript>
+</head>
+<body data-period="afternoon" data-view="horaires">
+
+<div id="splash" aria-hidden="true">
+  <div class="splash-core">
+    <svg class="splash-mark" viewBox="0 0 120 120">
+      <g fill="none" stroke="#D9B76E" stroke-width="3.4" stroke-linejoin="round">
+        <rect class="sm-a" x="33" y="33" width="54" height="54" pathLength="1"/>
+        <rect class="sm-b" x="33" y="33" width="54" height="54" transform="rotate(45 60 60)" pathLength="1"/>
+      </g>
+      <circle cx="60" cy="60" r="12.6" fill="#D9B76E"/>
+    </svg>
+    <p class="splash-ar" lang="ar">آمِين</p>
+    <p class="splash-latin">AMIN</p>
+  </div>
+  <div class="splash-bar"><i id="splashFill"></i></div>
+</div>
+
+<div class="stage" id="stage">
+  <canvas id="stars" aria-hidden="true"></canvas>
+  <div class="lattice" aria-hidden="true"></div>
+  <div class="wrap">
+    <header class="top">
+      <a class="brand" href="#horaires" aria-label="Amin, horaires">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="#D9B76E" stroke-width="1.6" stroke-linejoin="round"><rect x="11" y="11" width="18" height="18"/><rect x="11" y="11" width="18" height="18" transform="rotate(45 20 20)"/></g><circle cx="20" cy="20" r="4.2" fill="#D9B76E"/></svg>
+        <span class="brand-latin">Amin</span>
+        <span class="brand-ar" lang="ar">آمِين</span>
+      </a>
+      <nav class="tabs" aria-label="Sections">
+        <a class="tab" href="#horaires" data-view="horaires">Horaires</a>
+        <a class="tab" href="#coran" data-view="coran">Coran</a>
+        <a class="tab" href="#reciter" data-view="reciter">À réciter</a>
+        <a class="tab" href="#hadiths" data-view="hadiths">Hadiths</a>
+        <a class="tab" href="#apprendre" data-view="apprendre">Apprendre</a>
+        <a class="tab" href="#telecharger" data-view="telecharger"><span class="lbl-l">Télécharger</span><span class="lbl-s" aria-hidden="true">Appli</span></a>
+      </nav>
+      <div class="top-actions">
+      <button class="chip-btn" id="placeBtn" type="button" aria-haspopup="dialog" title="Changer de ville">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.3A7 7 0 0 1 19 9.7C19 14.8 12 21 12 21Z" fill="none" stroke="#D9B76E" stroke-width="1.6"/><circle cx="12" cy="9.8" r="2.4" fill="#D9B76E"/></svg>
+        <span class="place-name" id="placeName">Paris</span><span class="place-sub" id="placeSub"></span>
+        <svg class="caret" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      </button>
+      <button class="chip-btn" id="volBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="volPop" title="Volume général">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.500 9.500v5h3.600l4.400 4v-13l-4.400 4H3.500Z" fill="currentColor"/><path class="spk-on" d="M15 9a4 4 0 0 1 0 6M17.500 6.500a7.500 7.500 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="spk-off" d="M15.500 9.500l5 5M20.500 9.500l-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <span class="lbl tnum js-volpct">70 %</span>
+      </button>
+      <button class="chip-btn" id="settingsBtn" type="button" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="6.3"/><circle cx="12" cy="12" r="2.3"/><path stroke-width="2.6" d="M12 2.6v3M12 18.4v3M2.6 12h3M18.4 12h3M5.35 5.35l2.1 2.1M16.55 16.55l2.1 2.1M5.35 18.65l2.1-2.1M16.55 7.45l2.1-2.1"/></g></svg>
+        <span class="lbl">Réglages</span>
+      </button>
+      </div>
+    </header>
+
+    <div class="hero" id="hero">
+      <div class="dates">
+        <p class="greg" id="gregDate"></p>
+        <p class="hijri"><span lang="ar" id="hijriAr"></span><span class="hijri-fr" id="hijriFr"></span></p>
+      </div>
+
+      <section class="dome" aria-label="Course du soleil et prochaine prière">
+        <div class="dome-art">
+        <svg class="dome-svg" id="arc" viewBox="0 0 1000 370" aria-hidden="true">
+          <defs>
+            <radialGradient id="sunGlow">
+              <stop offset="0" stop-color="#FFE7AE" stop-opacity=".95"/>
+              <stop offset=".35" stop-color="#F0C774" stop-opacity=".45"/>
+              <stop offset="1" stop-color="#F0C774" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="horizon" x1="0" x2="1">
+              <stop offset="0" stop-color="#D9B76E" stop-opacity="0"/>
+              <stop offset=".15" stop-color="#D9B76E" stop-opacity=".7"/>
+              <stop offset=".85" stop-color="#D9B76E" stop-opacity=".7"/>
+              <stop offset="1" stop-color="#D9B76E" stop-opacity="0"/>
+            </linearGradient>
+            <mask id="crescent"><rect width="1000" height="370" fill="#fff"/><circle cx="836" cy="74" r="20" fill="#000"/></mask>
+          </defs>
+          <line x1="0" y1="300" x2="1000" y2="300" stroke="url(#horizon)" stroke-width="1.2"/>
+          <g id="arcPaths"></g>
+          <g id="arcMarkers"></g>
+          <g id="arcLabels"></g>
+          <g id="arcSun"></g>
+        </svg>
+        </div>
+        <div class="next" id="next">
+          <p class="next-label" id="nextLabel">Prochaine prière</p>
+          <p class="next-ar" lang="ar" id="nextAr"></p>
+          <p class="next-name"><span id="nextName"></span> à <time id="nextTime" class="tnum"></time></p>
+          <p class="countdown tnum" id="countdown"></p>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div class="frieze" aria-hidden="true"></div>
+
+<!-- ===================== HORAIRES ===================== -->
+<main class="court view" id="view-horaires" data-view="horaires">
+  <div class="wrap">
+    <div class="court-grid">
+      <div class="court-main">
+      <section class="arcade" id="arcade" aria-label="Horaires du jour"></section>
+      <div class="night-info" id="nightInfo"></div>
+
+      <section class="days" aria-labelledby="daysTitle">
+        <div class="section-head">
+          <h2 id="daysTitle">Les prochains jours</h2>
+          <div class="seg" role="group" aria-label="Période affichée">
+            <button type="button" class="seg-btn" data-days="7" aria-pressed="true">7 jours</button>
+            <button type="button" class="seg-btn" data-days="30" aria-pressed="false">30 jours</button>
+          </div>
+        </div>
+        <div class="days-scroll">
+          <table class="days-table tnum" id="daysTable">
+            <thead><tr><th scope="col">Jour</th><th scope="col">Fajr</th><th scope="col"><span class="th-long">Chourouq</span><span class="th-short" aria-hidden="true">Lever</span></th><th scope="col">Dhohr</th><th scope="col">Asr</th><th scope="col"><span class="th-long">Maghrib</span><span class="th-short" aria-hidden="true">Magh.</span></th><th scope="col">Icha</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="hint days-note"><span class="jumua-key" aria-hidden="true"></span>En doré le vendredi : l'heure de la prière du Joumou‘a (à vérifier auprès de ta mosquée).</p>
+      </section>
+
+      <section class="qibla-card" aria-labelledby="qiblaTitle">
+        <div class="qibla-mini" aria-hidden="true">
+          <svg viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(217,183,110,.35)"/>
+            <circle cx="60" cy="60" r="44" fill="none" stroke="rgba(217,183,110,.15)"/>
+            <text x="60" y="18" text-anchor="middle" font-size="11" fill="#AEBBD3" font-family="Jost, sans-serif">N</text>
+            <g id="qiblaNeedle">
+              <path d="M60 14 66 60 60 68 54 60Z" fill="#D9B76E"/>
+              <rect x="54" y="8" width="12" height="12" rx="1.5" fill="#0B1730" stroke="#D9B76E" stroke-width="1.4"/>
+              <path d="M54 12.5h12" stroke="#D9B76E" stroke-width="1.4"/>
+            </g>
+            <circle cx="60" cy="60" r="4" fill="#F5ECDC"/>
+          </svg>
+        </div>
+        <div class="qibla-text">
+          <h2 id="qiblaTitle">Direction de la Qibla</h2>
+          <p class="qibla-big"><b id="qiblaDeg" class="tnum"></b> <span id="qiblaDir"></span></p>
+          <p class="hint" id="qiblaDist"></p>
+        </div>
+        <button class="btn btn-primary" type="button" id="compassBtn">Ouvrir la boussole</button>
+      </section>
+
+      </div>
+      <aside class="court-side" aria-label="Lectures, alertes et hadith du jour">
+      <section class="moment-card" id="momentCard" aria-labelledby="momentTitle" hidden>
+        <svg class="moment-ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M31 6.500a17.500 17.500 0 1 0 10.500 29.800A14.500 14.500 0 0 1 31 6.500Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M33 17.500l1.400 3.100 3.100 1.400-3.100 1.400L33 26.500l-1.400-3.100-3.100-1.400 3.100-1.400L33 17.500Z" fill="currentColor"/></svg>
+        <div class="moment-text">
+          <p class="moment-kicker" id="momentKicker"></p>
+          <h2 id="momentTitle"></h2>
+          <p class="hint" id="momentWhat"></p>
+        </div>
+        <div class="moment-actions">
+          <button class="btn btn-primary" type="button" id="momentPlay"></button>
+          <a class="btn" id="momentRead" href="#reciter">Lire</a>
+          <a class="btn btn-quiet" href="#reciter">Toutes les lectures</a>
+        </div>
+      </section>
+
+      <section class="suivi-card" id="suiviCard" aria-labelledby="suiviCardTitle" hidden>
+        <div class="sc-ring" id="scRing" aria-hidden="true"></div>
+        <div class="sc-text">
+          <p class="sc-kicker" id="scKicker"></p>
+          <h2 id="suiviCardTitle"></h2>
+          <p class="hint" id="scSub"></p>
+        </div>
+        <div class="sc-actions">
+          <button class="btn btn-primary" type="button" id="scMain"></button>
+          <button class="btn btn-quiet" type="button" id="scOpen">Mon suivi</button>
+        </div>
+      </section>
+
+      <section class="alerts" id="alerts" data-state="off" aria-live="polite">
+        <div class="alerts-state">
+          <span class="dot" aria-hidden="true"></span>
+          <div>
+            <p class="alerts-title" id="alertsTitle">Alertes désactivées</p>
+            <p class="alerts-detail" id="alertsDetail"></p>
+          </div>
+        </div>
+        <div class="alerts-actions">
+          <button class="btn" type="button" id="installBtn" hidden>Installer l'application</button>
+          <button class="btn btn-primary" type="button" id="tvOverlayBtn" hidden>Autoriser le bandeau</button>
+          <button class="btn js-test" type="button" id="testBtn">Tester une alerte</button>
+          <button class="btn" type="button" id="alertsSettingsBtn">Régler les alertes</button>
+          <button class="btn btn-primary js-enable" type="button" id="enableBtn">Activer les alertes</button>
+        </div>
+      </section>
+
+      <section class="hadith-card" id="hadithCard" aria-labelledby="hadithCardTitle" hidden>
+        <div class="hc-head"><h2 id="hadithCardTitle">Hadith du jour</h2><span class="h-src" id="hadithCardSrc"></span></div>
+        <blockquote class="hc-text" id="hadithCardText"></blockquote>
+        <a class="btn" href="#hadiths">Lire le hadith et son explication</a>
+      </section>
+
+      </aside>
+    </div>
+
+    <footer class="foot">
+      <figure class="verse">
+        <span lang="ar">إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا</span>
+        <figcaption><span class="tr">La prière est, pour les croyants, une prescription à des temps déterminés.</span>
+          <cite>Sourate An-Nisā’, 4:103</cite></figcaption>
+      </figure>
+      <div class="meta">
+        <p>Calcul : <b id="methodName"></b></p>
+        <p>Calculé sur ton appareil, sans connexion. Compare avec ta mosquée et ajuste les minutes si besoin.</p>
+      </div>
+    </footer>
+  </div>
+</main>
+
+<!-- ===================== CORAN ===================== -->
+<main class="view quran" id="view-coran" data-view="coran" hidden>
+  <div class="wrap">
+    <div class="q-bar">
+      <button class="q-surah-btn" id="qSurahBtn" type="button" aria-haspopup="dialog">
+        <span class="q-num tnum" id="qNum">1</span>
+        <span class="q-names"><b id="qName">Al-Fatiha</b><small id="qSub">L'ouverture · 7 versets</small></span>
+        <span class="q-ar" lang="ar" id="qAr">الفاتحة</span>
+        <svg class="caret" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      </button>
+      <div class="seg seg-multi q-texts" role="group" aria-label="Textes affichés (plusieurs possibles)">
+        <button type="button" class="seg-btn" data-text="ar" aria-pressed="true">Arabe</button>
+        <button type="button" class="seg-btn" data-text="ph" aria-pressed="false">Phonétique</button>
+        <button type="button" class="seg-btn" data-text="tr" aria-pressed="false">Traduction</button>
+      </div>
+      <button class="chip-btn" id="qTrackBtn" type="button" aria-haspopup="dialog" title="Mon suivi de lecture et plan de 30 jours">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.500" fill="none" stroke="currentColor" stroke-width="1.600" opacity=".4"/><path d="M12 3.500a8.500 8.500 0 0 1 8.500 8.500" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8.800 12.300l2.200 2.200 4.200-4.600" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="lbl">Mon suivi</span>
+      </button>
+      <button class="chip-btn" id="qImmersive" type="button" aria-pressed="false" title="Lecture en plein écran (touche F)">
+        <svg class="i-enter" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg class="i-exit" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="lbl">Plein écran</span>
+      </button>
+      <button class="chip-btn" id="qOptionsBtn" type="button" aria-haspopup="dialog" aria-label="Options de lecture et d'écoute">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" stroke="currentColor" stroke-width="1.6" fill="none"/><circle cx="16" cy="7" r="2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="10" cy="17" r="2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span class="lbl">Options</span>
+      </button>
+    </div>
+
+    <div class="q-stage" id="qStage">
+      <button class="q-turn q-turn-next" data-turn="1" type="button" aria-label="Page suivante" title="Page suivante (touche →)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+      </button>
+      <div class="book" id="book" data-layout="double" data-paper="parchment" aria-live="polite">
+        <div class="spread" id="spread" dir="ltr"></div>
+      </div>
+      <button class="q-turn q-turn-prev" data-turn="-1" type="button" aria-label="Page précédente" title="Page précédente (touche ←)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+      </button>
+    </div>
+
+    <div class="q-pager" role="group" aria-label="Tourner les pages et écouter">
+      <button class="btn q-pg" data-turn="1" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+        <span class="pg-long">Page suivante</span><span class="pg-short" aria-hidden="true">Suivante</span>
+        <kbd class="kb" aria-hidden="true">→</kbd>
+      </button>
+      <button class="btn q-listen" id="qListen" type="button" aria-pressed="false">
+        <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5L8 5.5Z" fill="currentColor"/></svg>
+        <svg class="i-stop" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="1.5" fill="currentColor"/></svg>
+        <span>Écouter</span>
+      </button>
+      <button class="btn q-pg" data-turn="-1" type="button">
+        <span class="pg-long">Page précédente</span><span class="pg-short" aria-hidden="true">Précédente</span>
+        <kbd class="kb" aria-hidden="true">←</kbd>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+      </button>
+    </div>
+    <div class="q-foot">
+      <p id="qPageInfo" class="tnum"></p>
+      <p class="hint" id="qDirHint">Touche un verset pour l'entendre.</p>
+    </div>
+  </div>
+  <div class="q-measure" id="qMeasure" aria-hidden="true"></div>
+</main>
+
+<!-- ===================== À RÉCITER ===================== -->
+<main class="view reciter" id="view-reciter" data-view="reciter" hidden>
+  <div class="wrap reciter-wrap" id="reciterContent"></div>
+  <button class="r-top" id="rTop" type="button" aria-label="Remonter en haut de la page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14.500 12 8.500l6 6M12 9v9.500" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Haut de page</span></button>
+</main>
+
+<!-- ===================== HADITHS ===================== -->
+<main class="view hadiths" id="view-hadiths" data-view="hadiths" hidden>
+  <div class="wrap hadiths-wrap">
+    <header class="r-head">
+      <h1>Hadiths</h1>
+      <p class="r-ar" lang="ar">الحَدِيثُ الشَّرِيف</p>
+      <p class="r-lead">Des paroles et des actes du Prophète ﷺ, tous jugés authentiques et rapportés par al-Bukhârî ou Muslim, les deux recueils les plus sûrs. Chaque hadith est suivi de son explication.</p>
+    </header>
+    <section class="h-today" aria-labelledby="hTodayTitle">
+      <div class="h-section-head"><h2 id="hTodayTitle">Hadith du jour</h2><p class="hint" id="hTodayDate"></p></div>
+      <div id="hToday"></div>
+    </section>
+    <section class="h-random" aria-labelledby="hRandTitle">
+      <div class="h-section-head"><h2 id="hRandTitle">Un hadith au hasard</h2><p class="hint" id="hRandHint"></p></div>
+      <div class="row"><button class="btn btn-primary h-dice" type="button" id="hRandBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3.500" y="3.500" width="17" height="17" rx="4"/></g><g fill="currentColor"><circle cx="8.500" cy="8.500" r="1.400"/><circle cx="15.500" cy="8.500" r="1.400"/><circle cx="12" cy="12" r="1.400"/><circle cx="8.500" cy="15.500" r="1.400"/><circle cx="15.500" cy="15.500" r="1.400"/></g></svg><span>Hadith aléatoire</span></button></div>
+      <div id="hRandom" aria-live="polite"></div>
+    </section>
+    <section class="h-browse" aria-labelledby="hBrowseTitle">
+      <div class="h-section-head"><h2 id="hBrowseTitle">Tous les hadiths</h2><p class="hint" id="hCount"></p></div>
+      <label class="field h-search" for="hSearch"><span class="visually-hidden">Chercher un hadith</span><input class="input" id="hSearch" type="search" placeholder="Chercher un mot : prière, parents, colère…" autocomplete="off"></label>
+      <div class="h-themes" id="hThemes" role="group" aria-label="Thèmes"></div>
+      <div class="h-list" id="hList" aria-live="polite"></div>
+      <div class="row center"><button class="btn" type="button" id="hMore" hidden>Afficher plus de hadiths</button></div>
+    </section>
+    <p class="r-foot">Textes arabes, traductions françaises et explications : HadeethEnc.com, l'Encyclopédie des hadiths prophétiques traduits. Seuls les hadiths jugés authentiques et rapportés par al-Bukhârî, par Muslim ou par les deux ont été retenus, sur les thèmes de la vie quotidienne.</p>
+  </div>
+</main>
+
+<!-- ===================== APPRENDRE ===================== -->
+<main class="view dl" id="view-telecharger" data-view="telecharger" hidden>
+  <div class="wrap dl-wrap">
+    <header class="r-head">
+      <h1>Télécharger Amin</h1>
+      <p class="r-ar" lang="ar">تَحْمِيل التَّطْبِيق</p>
+      <p class="r-lead">Amin existe en application pour Windows, pour téléphone et pour la télévision : les horaires, les alertes de prière et le Coran s’ouvrent sans passer par le navigateur.</p>
+    </header>
+
+    <div class="dl-grid" id="dlGrid" data-os="other">
+      <section class="dl-card is-win" id="dlWin" aria-labelledby="dlWinT">
+        <svg class="arch-shape dl-shape" aria-hidden="true"><path/></svg>
+        <svg class="dl-icon" viewBox="0 0 48 48" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="6" y="9" width="36" height="24" rx="3"/><path d="M17 41h14M24 33v8"/><path d="m18 21 4 4 8-8"/></g></svg>
+        <h2 id="dlWinT">Windows</h2>
+        <p class="dl-meta" id="dlWinMeta">Installateur pour Windows 10 et 11</p>
+        <ul class="dl-feats">
+          <li>Une alerte à l’heure de chaque prière</li>
+          <li>Se lance au démarrage de Windows, si tu le veux</li>
+          <li>S’installe en un clic, sans compte</li>
+        </ul>
+        <button class="btn btn-primary dl-btn" id="dlWinBtn" type="button" disabled><span class="dl-fill" aria-hidden="true"></span><span class="dl-txt">Télécharger pour Windows</span></button>
+        <p class="dl-status" id="dlWinStatus" role="status" aria-live="polite"></p>
+        <details class="dl-help">
+          <summary>Windows ou Chrome affiche un avertissement ?</summary>
+          <p>C’est normal : Amin n’est pas encore signé par un éditeur reconnu, donc Windows se méfie de tout nouveau fichier.</p>
+          <ol>
+            <li>Dans Chrome, clique sur « Conserver » si le navigateur signale un fichier peu courant.</li>
+            <li>Ouvre le fichier. Si Windows écrit « Windows a protégé votre ordinateur », clique sur « Informations complémentaires ».</li>
+            <li>Clique ensuite sur « Exécuter quand même ».</li>
+          </ol>
+          <p class="dl-hash" id="dlWinHash" hidden>Empreinte SHA-256 du fichier : <code></code></p>
+        </details>
+      </section>
+
+      <section class="dl-card is-and" id="dlAnd" aria-labelledby="dlAndT">
+        <svg class="arch-shape dl-shape" aria-hidden="true"><path/></svg>
+        <svg class="dl-icon" viewBox="0 0 48 48" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="13" y="5" width="22" height="38" rx="4"/><path d="M21 38h6"/><path d="m19 21 5 5 5-5M24 26V14"/></g></svg>
+        <h2 id="dlAndT">Android</h2>
+        <p class="dl-meta">Installation depuis Chrome</p>
+        <ol class="dl-steps">
+          <li>Ouvre ce site dans Chrome sur ton téléphone.</li>
+          <li>Touche le menu ⋮, puis « Installer l’application » ou « Ajouter à l’écran d’accueil ».</li>
+          <li>Amin apparaît avec tes autres applications et s’ouvre en plein écran.</li>
+        </ol>
+        <button class="btn btn-primary dl-btn" id="dlAndBtn" type="button" hidden><span class="dl-txt">Installer Amin</span></button>
+        <p class="dl-status" id="dlAndStatus" role="status" aria-live="polite"></p>
+        <p class="dl-note">Le fichier APK proposé pour la télévision n’est pas fait pour un téléphone : ici, l’installation depuis Chrome donne l’application, et elle se met à jour toute seule.</p>
+      </section>
+
+      <section class="dl-card is-tv" id="dlTv" aria-labelledby="dlTvT">
+        <svg class="arch-shape dl-shape" aria-hidden="true"><path/></svg>
+        <svg class="dl-icon" viewBox="0 0 48 48" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="5" y="9" width="38" height="25" rx="3"/><path d="M17 41h14M20 34l-2 7M28 34l2 7"/><path d="m20 18 5 3.5-5 3.5Z"/></g></svg>
+        <h2 id="dlTvT">Télévision</h2>
+        <p class="dl-meta" id="dlTvMeta">Android TV et Google TV, Android 7 ou plus récent</p>
+        <ul class="dl-feats">
+          <li>L’adhan et un bandeau par-dessus les chaînes</li>
+          <li>Le Coran, les hadiths et un écran calme</li>
+          <li>Tout se fait à la télécommande</li>
+        </ul>
+        <button class="btn btn-primary dl-btn" id="dlTvBtn" type="button" disabled><span class="dl-fill" aria-hidden="true"></span><span class="dl-txt">Télécharger l’APK</span></button>
+        <p class="dl-status" id="dlTvStatus" role="status" aria-live="polite"></p>
+        <button class="dl-link" type="button" id="dlTvHow">Comment l’installer sur la télé</button>
+        <p class="dl-hash" id="dlTvHash" hidden>Empreinte SHA-256 : <code></code></p>
+      </section>
+    </div>
+
+    <section class="dl-tv" id="dlTvGuide" aria-labelledby="dlTvGuideT">
+      <h2 id="dlTvGuideT">Installer Amin sur la télé</h2>
+      <p class="dl-tv-lead">Amin ne passe pas par le Play Store : on installe le fichier APK soi-même, une seule fois. Il faut une télé, ou un boîtier branché dessus, qui fonctionne avec Android TV ou Google TV.</p>
+
+      <h3 class="dl-tv-h">Ta télé est-elle compatible ?</h3>
+      <div class="dl-compat">
+        <div class="dl-compat-col is-yes">
+          <h4>Ça marche</h4>
+          <ul>
+            <li><b>Sony</b> Bravia, depuis 2015</li>
+            <li><b>TCL</b>, les modèles Google TV ou Android TV</li>
+            <li><b>Thomson</b>, <b>Toshiba</b>, <b>Xiaomi</b>, <b>Sharp</b> : les modèles Google TV ou Android TV</li>
+            <li><b>Philips</b> : les modèles Google TV ou Android TV, surtout jusqu’en 2024</li>
+            <li><b>Hisense</b> : seulement les quelques gammes sous Google TV</li>
+            <li>Boîtiers et clés : <b>Chromecast avec Google TV</b>, <b>Google TV Streamer</b>, <b>Nvidia Shield</b>, <b>Xiaomi TV Box</b> et <b>TV Stick</b></li>
+            <li>Décodeurs : <b>Bbox 4K</b> (Bouygues), <b>Player Pop</b> et <b>Player TV Free 4K</b> (Free), <b>Connect TV</b> (SFR), si le décodeur accepte les applis installées à la main</li>
+          </ul>
+        </div>
+        <div class="dl-compat-col is-maybe">
+          <h4>Peut-être</h4>
+          <ul>
+            <li><b>Amazon Fire TV</b>, et les télés sous Fire TV (Panasonic récentes, par exemple) : l’APK s’installe sur les modèles Fire OS, mais le bandeau par-dessus les chaînes n’est pas garanti. Les modèles sous Vega OS ne l’acceptent pas.</li>
+          </ul>
+          <h4>Ça ne marche pas</h4>
+          <ul>
+            <li><b>Samsung</b> (Tizen) et <b>LG</b> (webOS)</li>
+            <li><b>Hisense</b> sous VIDAA, la plupart des modèles</li>
+            <li><b>Philips</b> sous Titan OS : presque tous les modèles 2025 et tous ceux de 2026</li>
+            <li><b>Apple TV</b>, <b>Roku</b>, les décodeurs <b>Orange</b></li>
+          </ul>
+        </div>
+      </div>
+      <p class="dl-tv-tip">Pour vérifier : dans les paramètres de la télé, rubrique « À propos », cherche « Android TV » ou « Google TV ». Il faut Android 7 ou plus récent.</p>
+
+      <h3 class="dl-tv-h">Quatre façons de l’installer</h3>
+      <div class="dl-ways">
+        <article class="dl-way">
+          <h4>Directement sur la télé</h4>
+          <p class="dl-way-s">Rien à brancher : tout se fait à la télécommande.</p>
+          <ol>
+            <li>Dans le Play Store de la télé, installe l’appli Downloader (cherche « aftvnews »).</li>
+            <li>Ouvre-la et tape cette adresse : <code id="dlTvUrl">https://github.com/KaataFR/amin/releases/latest/download/Amin-TV.apk</code></li>
+            <li>Downloader récupère le fichier puis propose de l’installer : autorise les « sources inconnues » pour Downloader, puis Installer.</li>
+          </ol>
+        </article>
+        <article class="dl-way">
+          <h4>Avec une clé USB</h4>
+          <p class="dl-way-s">Le plus simple, sans réglage technique.</p>
+          <ol>
+            <li>Télécharge l’APK ici, sur ton ordinateur, et copie-le sur une clé USB.</li>
+            <li>Sur la télé, installe un gestionnaire de fichiers depuis le Play Store, par exemple File Commander ou X-plore.</li>
+            <li>Branche la clé sur la télé, ouvre-la avec ce gestionnaire et choisis le fichier Amin-TV.apk.</li>
+            <li>La télé demande d’autoriser ce gestionnaire à installer des applis (« sources inconnues ») : accepte, puis Installer.</li>
+          </ol>
+        </article>
+        <article class="dl-way">
+          <h4>Depuis ton téléphone</h4>
+          <p class="dl-way-s">Sans câble, par le Wi-Fi de la maison.</p>
+          <ol>
+            <li>Installe l’appli Send Files to TV sur ton téléphone Android et sur la télé (Play Store).</li>
+            <li>Télécharge l’APK sur le téléphone, depuis cette page.</li>
+            <li>Dans Send Files to TV, envoie le fichier vers la télé.</li>
+            <li>Sur la télé, ouvre le fichier reçu, autorise les « sources inconnues » pour cette appli, puis Installer.</li>
+          </ol>
+        </article>
+        <article class="dl-way">
+          <h4>Depuis un ordinateur</h4>
+          <p class="dl-way-s">Pour les habitués : le seul moyen de tout régler à distance.</p>
+          <ol>
+            <li>Sur la télé, active les options pour les développeurs (appuie 7 fois sur la version du système dans « À propos »), puis le débogage.</li>
+            <li>Sur l’ordinateur, installe les <a href="https://developer.android.com/tools/releases/platform-tools" target="_blank" rel="noopener">SDK Platform-Tools</a> officiels d’Android.</li>
+            <li>Tape <code>adb connect</code> suivi de l’adresse IP de la télé, puis <code>adb install Amin-TV.apk</code>, et accepte la demande sur la télé.</li>
+          </ol>
+        </article>
+      </div>
+
+      <h3 class="dl-tv-h">Après l’installation</h3>
+      <ul class="dl-after">
+        <li>Amin se trouve avec les autres applis de la télé (souvent dans « Applis », puis « Voir tout »).</li>
+        <li>Choisis la ville dans Réglages, ou ajoute ta mosquée dans « Horaires de ma mosquée ».</li>
+        <li>Pour que l’adhan s’affiche par-dessus les chaînes, ouvre Réglages › Autoriser le bandeau. Si la télé ne propose pas ce réglage, il passe par un ordinateur : <code>adb shell appops set fr.amin.tv SYSTEM_ALERT_WINDOW allow</code>.</li>
+        <li>Pour qu’Amin serve aussi d’écran de veille quand la télé reste inactive : <code>adb shell settings put secure screensaver_components fr.amin.tv/.AmbientDream</code>. Sur les télés Android TV, ce choix existe aussi dans les paramètres de l’écran de veille.</li>
+      </ul>
+    </section>
+
+    <section class="dl-more" aria-labelledby="dlMoreT">
+      <h2 id="dlMoreT">Autres appareils</h2>
+      <div class="dl-more-grid">
+        <div>
+          <h3>iPhone et iPad</h3>
+          <p>Ouvre ce site dans Safari, touche le bouton Partager, puis « Sur l’écran d’accueil ».</p>
+        </div>
+        <div>
+          <h3>Mac, Linux et autres ordinateurs</h3>
+          <p>Il n’y a pas d’application dédiée. Dans Chrome ou Edge, clique sur l’icône « Installer » à droite de la barre d’adresse pour garder Amin dans ses propres fenêtre et raccourci.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<main class="view learn" id="view-apprendre" data-view="apprendre" hidden>
+  <div class="wrap learn-wrap">
+    <nav class="learn-nav" id="learnNav" aria-label="Chapitres"></nav>
+    <article class="learn-content" id="learnContent"></article>
+  </div>
+</main>
+
+<nav class="bottom-nav" aria-label="Sections">
+  <a href="#horaires" data-view="horaires"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>Horaires</a>
+  <a href="#coran" data-view="coran"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C9.8 5 7 4.6 4 5v13c3-.4 5.8 0 8 1.5 2.2-1.5 5-1.9 8-1.5V5c-3-.4-5.8 0-8 1.5Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 6.5v13" stroke="currentColor" stroke-width="1.6"/></svg>Coran</a>
+  <a href="#reciter" data-view="reciter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.500 3.800a8.500 8.500 0 1 0 5 14.500A7.200 7.200 0 0 1 15.500 3.800Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M17 9l.800 1.700 1.700.800-1.700.800L17 14l-.800-1.700-1.700-.800 1.700-.800L17 9Z" fill="currentColor"/></svg>À réciter</a>
+  <a href="#hadiths" data-view="hadiths"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M6 3.500h10.500a1.500 1.500 0 0 1 1.500 1.500v15.500l-3-2-3 2-3-2-3 2V5a1.500 1.500 0 0 1 1.500-1.500Z" transform="translate(.500 0)"/><path d="M9.500 8.500h6M9.500 12h6"/></g></svg>Hadiths</a>
+  <a href="#apprendre" data-view="apprendre"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M2.5 9.5 12 5l9.5 4.5L12 14 2.5 9.5Z"/><path d="M6.5 11.6v4.2c1.6 1.5 3.4 2.2 5.5 2.2s3.900-.7 5.500-2.200v-4.200M21.500 9.500v5"/></g></svg>Apprendre</a>
+<a href="#telecharger" data-view="telecharger"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M12 4v10.5"/><path d="m7.5 10.5 4.500 4.500 4.500-4.500"/><path d="M5 19.500h14"/></g></svg>Appli</a>
+</nav>
+
+<div class="now-playing" id="nowPlaying" role="status" hidden>
+  <button class="np-stop" type="button" id="npStop" aria-label="Arrêter la récitation"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.500" y="6.500" width="11" height="11" rx="1.500" fill="currentColor"/></svg></button>
+  <div class="np-text"><b id="npTitle"></b><span class="tnum" id="npSub"></span></div>
+  <a class="btn" id="npOpen" href="#coran">Suivre dans le livre</a>
+</div>
+
+<div class="vol-pop" id="volPop" role="group" aria-label="Volume général" hidden>
+  <p class="vol-title">Volume général</p>
+  <div class="range-row vol-row"><button class="vol-mute js-mute" type="button" aria-pressed="false" aria-label="Couper le son"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.500 9.500v5h3.600l4.400 4v-13l-4.400 4H3.500Z" fill="currentColor"/><path class="spk-on" d="M15 9a4 4 0 0 1 0 6M17.500 6.500a7.500 7.500 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="spk-off" d="M15.500 9.500l5 5M20.500 9.500l-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button><input class="js-volume" id="volPopRange" type="range" min="0" max="1" step="0.05" aria-label="Volume général"><output class="vol-pct tnum js-volpct" for="volPopRange">70 %</output></div>
+  <p class="hint">Alertes, adhan, récitation du Coran et guide.</p>
+</div>
+
+<div class="alert-box" id="alertBox" role="alertdialog" aria-labelledby="alertTitle" hidden>
+  <svg class="arch-shape" aria-hidden="true"><path/></svg>
+  <div class="alert-ar" lang="ar" id="alertAr"></div>
+  <p class="alert-title" id="alertTitle"></p>
+  <p class="alert-body" id="alertBody"></p>
+  <div class="alert-actions">
+    <button class="btn" type="button" id="snoozeBtn">Rappelle-moi dans 5 min</button>
+    <button class="btn btn-primary" type="button" id="dismissBtn">J'y vais</button>
+  </div>
+</div>
+
+<dialog class="fig-zoom" id="figZoom" aria-label="Illustration agrandie">
+  <img id="figZoomImg" alt="">
+  <p id="figZoomCap"></p>
+  <button class="btn" type="button" data-close>Fermer</button>
+</dialog>
+
+<!-- Boussole Qibla -->
+<dialog class="compass-dlg" id="compassDlg" aria-labelledby="compassTitle">
+  <div class="compass-head">
+    <h2 id="compassTitle">Boussole Qibla</h2>
+    <button class="btn" type="button" id="compassClose">Fermer</button>
+  </div>
+  <div class="compass" id="compass" data-state="idle">
+    <svg viewBox="0 0 300 300" aria-hidden="true">
+      <defs>
+        <radialGradient id="cmpGlow"><stop offset="0" stop-color="#49B8A8" stop-opacity=".35"/><stop offset="1" stop-color="#49B8A8" stop-opacity="0"/></radialGradient>
+      </defs>
+      <circle class="cmp-glow" cx="150" cy="150" r="146" fill="url(#cmpGlow)"/>
+      <g id="cmpRose">
+        <circle cx="150" cy="150" r="132" fill="#0D1B38" stroke="rgba(217,183,110,.55)" stroke-width="1.2"/>
+        <circle cx="150" cy="150" r="104" fill="none" stroke="rgba(217,183,110,.18)"/>
+        <g id="cmpTicks"></g>
+        <g font-family="Jost, sans-serif" font-size="17" fill="#F5ECDC" text-anchor="middle">
+          <text x="150" y="44">N</text><text x="258" y="156">E</text><text x="150" y="268">S</text><text x="42" y="156">O</text>
+        </g>
+        <g id="cmpKaaba">
+          <path d="M150 52 156 150 150 160 144 150Z" fill="#D9B76E"/>
+          <rect x="137" y="22" width="26" height="26" rx="2.5" fill="#0B1730" stroke="#D9B76E" stroke-width="1.8"/>
+          <path d="M137 31h26" stroke="#D9B76E" stroke-width="1.8"/>
+        </g>
+      </g>
+      <path d="M150 4 158 20H142Z" fill="#F5ECDC"/>
+      <circle cx="150" cy="150" r="7" fill="#F5ECDC"/>
+    </svg>
+  </div>
+  <p class="compass-status" id="compassStatus" aria-live="polite">Active la boussole pour orienter ton téléphone vers La Mecque.</p>
+  <p class="compass-meta tnum" id="compassMeta"></p>
+  <div class="row center">
+    <button class="btn btn-primary" type="button" id="compassStart">Activer la boussole</button>
+    <button class="btn" type="button" id="compassLocate">Utiliser ma position exacte</button>
+  </div>
+  <p class="hint center" id="compassTip">Tiens ton téléphone à plat, loin des objets métalliques et des aimants. Si l'aiguille hésite, décris un 8 dans l'air avec le téléphone pour calibrer la boussole.</p>
+</dialog>
+
+<!-- Coran : sommaire -->
+<dialog class="sheet" id="surahSheet" aria-labelledby="surahTitle">
+  <div class="sheet-head">
+    <h2 id="surahTitle">Sommaire</h2>
+    <button class="btn" type="button" data-close>Fermer</button>
+  </div>
+  <div class="sheet-body">
+    <div class="grid-2 goto">
+      <label class="field" for="surahSearch"><span>Chercher une sourate</span><input class="input" id="surahSearch" type="search" placeholder="Nom ou numéro" autocomplete="off"></label>
+      <label class="field" for="gotoVerse"><span>Aller au verset (ex. 2:255)</span><input class="input tnum" id="gotoVerse" type="text" inputmode="numeric" placeholder="sourate:verset" autocomplete="off"></label>
+    </div>
+    <p class="status-line" id="gotoStatus"></p>
+    <ol class="surah-list" id="surahList"></ol>
+  </div>
+</dialog>
+
+<!-- Explication d'un verset -->
+<dialog class="sheet" id="tafsirSheet" aria-labelledby="tfTitle">
+  <div class="sheet-head">
+    <div class="tf-headtext"><h2 id="tfTitle">Explication du verset</h2><p class="tf-ref" id="tfRef"></p></div>
+    <button class="btn" type="button" data-close>Fermer</button>
+  </div>
+  <div class="tf-nav">
+    <button class="btn" type="button" id="tfPrev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.800"/></svg><span>Précédent</span></button>
+    <span class="tf-pos tnum" id="tfPos" aria-live="polite"></span>
+    <button class="btn" type="button" id="tfNext"><span>Suivant</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.800"/></svg></button>
+  </div>
+  <div class="sheet-body" id="tfBody"></div>
+</dialog>
+
+<!-- Mon suivi de lecture et plan de 30 jours -->
+<dialog class="sheet sheet-big" id="suiviSheet" aria-labelledby="svTitle">
+  <div class="sheet-head">
+    <h2 id="svTitle">Mon suivi du Coran</h2>
+    <button class="btn" type="button" data-close>Fermer</button>
+  </div>
+  <div class="sheet-tabs" role="tablist" aria-label="Suivi de lecture">
+    <button type="button" role="tab" data-tab="jour" aria-selected="true">Aujourd’hui</button>
+    <button type="button" role="tab" data-tab="plan" aria-selected="false">Plan 30 jours</button>
+    <button type="button" role="tab" data-tab="bilan" aria-selected="false">Avancement</button>
+  </div>
+  <div class="sheet-body">
+    <div class="sheet-panel" role="tabpanel" data-panel="jour" id="svJour"></div>
+    <div class="sheet-panel" role="tabpanel" data-panel="plan" id="svPlan" hidden></div>
+    <div class="sheet-panel" role="tabpanel" data-panel="bilan" id="svBilan" hidden></div>
+  </div>
+</dialog>
+
+<!-- Coran : options -->
+<dialog class="sheet" id="qOptions" aria-labelledby="qOptTitle">
+  <div class="sheet-head">
+    <h2 id="qOptTitle">Options du Coran</h2>
+    <button class="btn" type="button" data-close>Fermer</button>
+  </div>
+  <div class="sheet-tabs" role="tablist" aria-label="Options du Coran">
+    <button type="button" role="tab" data-tab="affichage" aria-selected="true">Affichage</button>
+    <button type="button" role="tab" data-tab="traduction" aria-selected="false">Traduction</button>
+    <button type="button" role="tab" data-tab="ecoute" aria-selected="false">Écoute</button>
+    <button type="button" role="tab" data-tab="horsligne" aria-selected="false">Hors connexion</button>
+  </div>
+  <div class="sheet-body">
+    <div class="sheet-panel" role="tabpanel" data-panel="affichage">
+      <section>
+        <h3>Mise en page</h3>
+        <div class="seg seg-wide" role="group" aria-label="Mise en page" id="qLayoutSeg">
+          <button type="button" class="seg-btn" data-layout="double" aria-pressed="true">Double page</button>
+          <button type="button" class="seg-btn" data-layout="single" aria-pressed="false">Page unique</button>
+        </div>
+        <p class="hint after">Sur un écran étroit, le livre passe automatiquement en page unique.</p>
+      </section>
+      <section>
+        <h3>Sens des pages</h3>
+        <div class="seg seg-wide" role="group" aria-label="Sens de lecture du livre" id="qDirSeg">
+          <button type="button" class="seg-btn" data-dir="ltr" aria-pressed="true">Gauche → droite</button>
+          <button type="button" class="seg-btn" data-dir="rtl" aria-pressed="false">Droite → gauche</button>
+        </div>
+        <p class="hint after" id="qDirOptHint"></p>
+      </section>
+      <section>
+        <h3>Taille du texte</h3>
+        <div class="range-row"><span class="range-a small" aria-hidden="true">A</span><input id="qSize" type="range" min="0.8" max="1.5" step="0.05" aria-label="Taille du texte arabe et de la traduction"><span class="range-a big" aria-hidden="true">A</span></div>
+      </section>
+      <section>
+        <h3>Papier</h3>
+        <div class="seg seg-wide" role="group" aria-label="Papier" id="qPaperSeg">
+          <button type="button" class="seg-btn" data-paper="parchment" aria-pressed="true">Parchemin</button>
+          <button type="button" class="seg-btn" data-paper="night" aria-pressed="false">Nuit</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="sheet-panel" role="tabpanel" data-panel="traduction" hidden>
+      <section>
+        <h3>Traduction française</h3>
+        <div class="radio-list">
+          <label class="check card"><input type="radio" name="qTrans" value="rm"> <span><b>Rachid Maach</b><small>La plus récente, claire et fidèle, avec notes explicatives.</small></span></label>
+          <label class="check card"><input type="radio" name="qTrans" value="hm"> <span><b>Muhammad Hamidullah</b><small>La traduction classique, révisée par le Complexe du Roi Fahd.</small></span></label>
+        </div>
+        <label class="check"><input type="checkbox" id="qNotes"> Afficher les notes du traducteur</label>
+        <p class="hint after">Pour voir la traduction, active « Traduction » au-dessus du livre.</p>
+      </section>
+      <section>
+        <h3>Sources</h3>
+        <p class="hint">Texte arabe uthmani du Complexe du Roi Fahd (Médine). Traductions de Rachid Maach et de Muhammad Hamidullah, publiées par QuranEnc.com. Pagination identique au Coran de Médine (604 pages). Phonétique calculée par Amin à partir du texte arabe : un appui pour la lecture, qui ne remplace pas l'apprentissage du tajwîd auprès d'un enseignant.</p>
+      </section>
+    </div>
+
+    <div class="sheet-panel" role="tabpanel" data-panel="ecoute" hidden>
+      <section>
+        <h3>Volume général</h3>
+        <div class="range-row vol-row"><button class="vol-mute js-mute" type="button" aria-pressed="false" aria-label="Couper le son"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.500 9.500v5h3.600l4.400 4v-13l-4.400 4H3.500Z" fill="currentColor"/><path class="spk-on" d="M15 9a4 4 0 0 1 0 6M17.500 6.500a7.500 7.500 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="spk-off" d="M15.500 9.500l5 5M20.500 9.500l-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button><input class="js-volume" id="qVolume" type="range" min="0" max="1" step="0.05" aria-label="Volume général"><output class="vol-pct tnum js-volpct" for="qVolume">70 %</output></div>
+      </section>
+      <section>
+        <h3>Récitateur</h3>
+        <div class="radio-list">
+          <label class="check card"><input type="radio" name="qReciter" value="husary"> <span><b>Mahmoud Khalil al-Husary</b><small>Lent et très articulé, idéal pour apprendre la prononciation. Sourates courtes déjà disponibles hors connexion.</small></span></label>
+          <label class="check card"><input type="radio" name="qReciter" value="alafasy"> <span><b>Mishary Rashid Alafasy</b><small>Voix claire et mélodieuse.</small></span></label>
+          <label class="check card"><input type="radio" name="qReciter" value="minshawi"> <span><b>Mohamed Siddiq al-Minshawi</b><small>Récitation classique égyptienne.</small></span></label>
+          <label class="check card"><input type="radio" name="qReciter" value="abdulbasit"> <span><b>Abdelbasset Abdessamad</b><small>Murattal : voix ample, au rythme habituel.</small></span></label>
+          <label class="check card"><input type="radio" name="qReciter" value="abdulbasit_mj"> <span><b>Abdelbasset Abdessamad, mujawwad</b><small>Lent et très mélodieux, avec de longues tenues.</small></span></label>
+        </div>
+      </section>
+      <section>
+        <h3>Vitesse</h3>
+        <div class="seg seg-wide" role="group" aria-label="Vitesse de récitation" id="qRateSeg">
+          <button type="button" class="seg-btn" data-rate="1" aria-pressed="true">Normale</button>
+          <button type="button" class="seg-btn" data-rate="0.85" aria-pressed="false">Un peu lente</button>
+          <button type="button" class="seg-btn" data-rate="0.7" aria-pressed="false">Lente</button>
+        </div>
+      </section>
+      <section>
+        <h3>Quand je touche un verset</h3>
+        <label class="check"><input type="checkbox" id="qFollow"> Enchaîner avec les versets suivants</label>
+        <p class="hint after">Le bouton « Écouter » sous le livre lit toujours la page entière, puis tourne les pages tout seul.</p>
+      </section>
+      <section>
+        <h3>Quand je tourne la page</h3>
+        <label class="check"><input type="checkbox" id="qPageFlip"> Page qui se tourne</label>
+        <label class="check"><input type="checkbox" id="qPageSound"> Bruit de page</label>
+        <p class="hint after">En écoute, la récitation marque une pause à chaque page tournée, avec ce bruit.</p>
+      </section>
+    </div>
+
+    <div class="sheet-panel" role="tabpanel" data-panel="horsligne" hidden>
+      <section>
+        <h3>Écoute hors connexion</h3>
+        <p class="hint" id="qOffStatus"></p>
+        <div class="off-actions">
+          <button class="btn q-off-btn" type="button" id="qOffSurah">Télécharger cette sourate</button>
+          <button class="btn q-off-btn" type="button" id="qOffAmma">Télécharger le juz’ ‘Amma (78 à 114)</button>
+          <button class="btn q-off-btn" type="button" id="qOffAll">Télécharger tout le Coran (plus d’1 Go)</button>
+        </div>
+        <progress id="qOffBar" max="1" value="0" hidden></progress>
+        <p class="status-line" id="qOffProgress" aria-live="polite"></p>
+        <div class="row">
+          <button class="btn" type="button" id="qOffStop" hidden>Arrêter</button>
+          <button class="btn btn-quiet" type="button" id="qOffClear">Effacer les téléchargements</button>
+        </div>
+        <p class="hint after">Chaque verset écouté est aussi gardé automatiquement. Le téléchargement concerne le récitateur choisi dans « Écoute ». Il fonctionne sur le site en ligne et dans l’app PC . Récitations d’EveryAyah.com.</p>
+      </section>
+    </div>
+  </div>
+</dialog>
+
+<!-- Réglages -->
+<dialog class="sheet" id="settings" aria-labelledby="settingsTitle">
+  <div class="sheet-head">
+    <h2 id="settingsTitle">Réglages</h2>
+    <button class="btn" type="button" id="closeSettings">Fermer</button>
+  </div>
+  <div class="sheet-tabs" role="tablist" aria-label="Réglages">
+    <button type="button" role="tab" data-tab="ville" aria-selected="true">Ville</button>
+    <button type="button" role="tab" data-tab="alertes" aria-selected="false">Alertes</button>
+    <button type="button" role="tab" data-tab="sons" aria-selected="false">Sons</button>
+    <button type="button" role="tab" data-tab="calcul" aria-selected="false">Calcul</button>
+    <button type="button" role="tab" data-tab="calendrier" aria-selected="false">Calendrier</button>
+  </div>
+  <div class="sheet-body">
+    <div class="sheet-panel" role="tabpanel" data-panel="ville">
+      <section aria-labelledby="hPlace">
+        <h3 id="hPlace">Ta ville</h3>
+        <p class="current-place"><span>Ville actuelle</span><b id="currentPlace"></b></p>
+        <label class="field" for="citySearch"><span>Chercher une autre ville</span>
+          <input class="input" id="citySearch" type="search" autocomplete="off" placeholder="Ex. Lyon, Roubaix, Casablanca…" aria-controls="cityResults">
+        </label>
+        <ul class="results" id="cityResults" aria-label="Résultats"></ul>
+        <div class="or-line" aria-hidden="true"><span>ou</span></div>
+        <button class="btn btn-block" type="button" id="locateBtn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="6.500" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 2.500v3M12 18.500v3M2.500 12h3M18.500 12h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          Utiliser ma position
+        </button>
+        <p class="status-line" id="placeStatus"></p>
+        <details class="more">
+          <summary>Ta ville n'est pas dans la liste ? Saisis ses coordonnées</summary>
+          <div class="grid-2">
+            <label class="field" for="manName"><span>Nom</span><input class="input" id="manName" type="text"></label>
+            <label class="field" for="manTz"><span>Fuseau horaire</span><select class="input" id="manTz"></select></label>
+            <label class="field" for="manLat"><span>Latitude</span><input class="input tnum" id="manLat" type="number" step="0.0001" min="-90" max="90"></label>
+            <label class="field" for="manLon"><span>Longitude</span><input class="input tnum" id="manLon" type="number" step="0.0001" min="-180" max="180"></label>
+          </div>
+          <div class="row" style="margin-top:12px"><button class="btn" type="button" id="manApply">Utiliser ces coordonnées</button></div>
+        </details>
+      </section>
+      <section aria-labelledby="hMosque" id="mqSection">
+        <h3 id="hMosque">Horaires de ta mosquée</h3>
+        <p class="hint">Par défaut, Amin calcule les horaires de ta ville. Pour suivre ceux de ta mosquée, recopie ses horaires de trois dates : Amin en déduit sa façon de compter pour toute l’année.</p>
+        <div class="mq-list" id="mqList" role="group" aria-labelledby="hMosque"></div>
+        <div class="mq-result" id="mqResult" role="status" hidden></div>
+        <button class="btn btn-block" type="button" id="mqAdd">Ajouter ma mosquée</button>
+        <form class="mq-ed" id="mqEd" hidden novalidate>
+          <h4 id="mqEdTitle">Ajouter une mosquée</h4>
+          <label class="field" for="mqName"><span>Nom de la mosquée</span><input class="input" id="mqName" type="text" maxlength="40" autocomplete="off" placeholder="Ex. Mosquée al-Boukhari"></label>
+          <p class="hint mq-how">Où trouver ses horaires : sur le calendrier de la mosquée, ou dans l’appli Mawaqit (page de la mosquée › Calendrier, puis touche la date). Les trois dates proposées suffisent pour toute l’année ; laisse vide celle que tu n’as pas.</p>
+          <p class="hint mq-city" id="mqCity"></p>
+          <div class="mq-days" id="mqDays"></div>
+          <button class="link-btn mq-more" type="button" id="mqMore">Ajouter une autre date</button>
+          <p class="status-line" id="mqStatus" role="alert"></p>
+          <div class="mq-actions"><button class="btn btn-primary" type="submit" id="mqSave">Enregistrer et utiliser</button><button class="btn" type="button" id="mqCancel">Annuler</button></div>
+        </form>
+      </section>
+    </div>
+
+    <div class="sheet-panel" role="tabpanel" data-panel="alertes" hidden>
+      <section aria-labelledby="hAlerts">
+        <h3 id="hAlerts">Alertes de prière</h3>
+        <div class="master" id="alertsMaster" data-state="off">
+          <div><b id="masterTitle">Alertes désactivées</b><small id="masterDetail">Notification et son à l'heure de chaque prière.</small></div>
+          <button class="btn btn-primary js-enable" type="button">Activer les alertes</button>
+        </div>
+        <button class="btn btn-block js-test" type="button">Tester une alerte maintenant</button>
+      </section>
+      <section>
+        <h3>Prières à annoncer</h3>
+        <div class="grid-2" id="alertChecks"></div>
+      </section>
+      <section>
+        <h3 id="hRem">Rappels avant la prière</h3>
+        <p class="hint">Choisis-en autant que tu veux, ou aucun.</p>
+        <div class="chips" id="reminderChips" role="group" aria-labelledby="hRem"></div>
+      </section>
+      <section>
+        <h3>Affichage de l'alerte</h3>
+        <label class="check"><input type="checkbox" id="sticky"> Garder la notification affichée jusqu'à ce que je la ferme</label>
+        <div id="desktopOptions" hidden>
+          <label class="check"><input type="checkbox" id="overlay"> Afficher l'alerte par-dessus les autres fenêtres</label>
+          <label class="check"><input type="checkbox" id="autostart"> Lancer Amin au démarrage de Windows</label>
+        </div>
+        <details class="more" id="tvHelp" hidden>
+          <summary>Afficher l’alerte par-dessus les chaînes et les vidéos</summary>
+          <p class="hint">Sans cette autorisation, l’adhan se fait entendre mais le bandeau ne s’affiche que lorsque Amin est ouverte.</p>
+          <div class="row" style="margin:12px 0"><button class="btn" type="button" id="tvOverlayBtn2">Ouvrir le réglage de la télé</button></div>
+          <p class="hint">Si la télé ne propose pas ce réglage, autorise Amin depuis un ordinateur relié au même réseau (débogage USB activé dans les options pour les développeurs de la télé, adresse de la télé : <b id="tvIp"></b>) :</p>
+          <pre class="tv-cmd" id="tvCmd"></pre>
+        </details>
+        <details class="more" id="gamingHelp">
+          <summary>L’alerte n’apparaît pas en plein écran ?</summary>
+          <ol class="howto">
+            <li>En plein écran, Windows passe souvent en mode Ne pas déranger et masque les notifications. Le son, lui, passe toujours : garde-le activé.</li>
+            <li>Pour voir quand même les notifications : Paramètres Windows › Système › Notifications, puis désactive l'activation automatique de Ne pas déranger en plein écran, ou ajoute ton navigateur (ou Amin) aux notifications prioritaires.</li>
+            <li>Avec l'app PC, une application en mode « fenêtré sans bordure » reste utilisable : l'alerte s'affiche par-dessus sans lui voler le focus.</li>
+            <li>Version site : laisse l'onglet ouvert (épinglé) ou installe le site comme application.</li>
+          </ol>
+        </details>
+      </section>
+    </div>
+
+    <div class="sheet-panel" role="tabpanel" data-panel="sons" hidden>
+      <section>
+        <h3>Volume général</h3>
+        <div class="range-row vol-row"><button class="vol-mute js-mute" type="button" aria-pressed="false" aria-label="Couper le son"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.500 9.500v5h3.600l4.400 4v-13l-4.400 4H3.500Z" fill="currentColor"/><path class="spk-on" d="M15 9a4 4 0 0 1 0 6M17.500 6.500a7.500 7.500 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="spk-off" d="M15.500 9.500l5 5M20.500 9.500l-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button><input class="js-volume" id="volume" type="range" min="0" max="1" step="0.05" aria-label="Volume général"><output class="vol-pct tnum js-volpct" for="volume">70 %</output></div>
+        <p class="hint after">Règle d'un coup le son des alertes, de l'adhan, de la récitation du Coran et du guide. Le haut-parleur à gauche coupe tout le son.</p>
+      </section>
+      <section>
+        <h3>À l'heure de la prière</h3>
+        <label class="field" for="prayerSound"><span>Son</span></label>
+        <div class="row nowrap"><select class="input" id="prayerSound"></select><button class="btn btn-listen" type="button" data-preview="prayer">Écouter</button></div>
+        <label class="field" for="adhanLength"><span>Durée de l'adhan</span>
+          <select class="input" id="adhanLength">
+            <option value="0">En entier</option>
+            <option value="90">1 min 30</option>
+            <option value="45">45 secondes</option>
+            <option value="20">20 secondes</option>
+          </select>
+        </label>
+        <div class="import-row">
+          <label class="btn" for="adhanFile">Importer ton propre adhan</label>
+          <input id="adhanFile" type="file" accept="audio/*" class="visually-hidden">
+          <span id="adhanName" class="hint"></span>
+        </div>
+      </section>
+      <section>
+        <h3>Pour les rappels</h3>
+        <label class="field" for="reminderSound"><span>Son</span></label>
+        <div class="row nowrap"><select class="input" id="reminderSound"></select><button class="btn btn-listen" type="button" data-preview="pre">Écouter</button></div>
+      </section>
+      <section>
+        <h3>Crédits</h3>
+        <p class="hint">Adhans enregistrés en studio par Ahmed al-Imadi, Mokhtar Hadj Slimane et Majed al-Hamathani, publiés dans le domaine public sur Internet Archive (collection « Adhan Notifications »). Les rappels sont des extraits de ces adhans.</p>
+      </section>
+    </div>
+
+    <div class="sheet-panel" role="tabpanel" data-panel="calcul" hidden>
+      <section aria-labelledby="hCalc">
+        <h3 id="hCalc">Méthode de calcul</h3>
+        <p class="hint">Choisis celle de ta mosquée. Les angles fixent l'heure de Fajr et d'Icha.</p>
+        <p class="mq-calc-note" id="mqCalcNote" hidden></p>
+        <label class="field" for="method"><span>Méthode</span><select class="input" id="method"></select></label>
+        <div class="grid-3" id="customFields" hidden>
+          <label class="field" for="fajrAngle"><span>Fajr (°)</span><input class="input tnum" id="fajrAngle" type="number" step="0.1" min="5" max="25"></label>
+          <label class="field" for="ishaAngle"><span>Icha (°)</span><input class="input tnum" id="ishaAngle" type="number" step="0.1" min="5" max="25"></label>
+          <label class="field" for="ishaMinutes"><span>ou Icha + min</span><input class="input tnum" id="ishaMinutes" type="number" step="1" min="0" max="150"></label>
+        </div>
+        <label class="field" for="highLat"><span>Nuits courtes d'été (hautes latitudes)</span>
+          <select class="input" id="highLat">
+            <option value="angle">Selon l'angle (recommandé)</option>
+            <option value="seventh">Septième de la nuit</option>
+            <option value="middle">Milieu de la nuit</option>
+            <option value="none">Aucune correction</option>
+          </select>
+        </label>
+      </section>
+      <section aria-labelledby="hAdj">
+        <h3 id="hAdj">Ajuster les minutes</h3>
+        <p class="hint">Pour coller exactement aux horaires affichés par ta mosquée. Exemple : 2 pour deux minutes plus tard, -3 pour trois minutes plus tôt.</p>
+        <div class="grid-3" id="adjustFields"></div>
+      </section>
+    </div>
+
+    <div class="sheet-panel" role="tabpanel" data-panel="calendrier" hidden>
+      <section aria-labelledby="hHijri">
+        <h3 id="hHijri">Calendrier hégirien</h3>
+        <label class="field" for="hijriAdjust"><span>Décalage selon l'observation de la lune</span>
+          <select class="input" id="hijriAdjust">
+            <option value="-2">−2 jours</option><option value="-1">−1 jour</option><option value="0">Aucun</option><option value="1">+1 jour</option><option value="2">+2 jours</option>
+          </select>
+        </label>
+        <label class="check" style="margin-top:8px"><input type="checkbox" id="hijriAtMaghrib"> Passer au jour suivant dès le Maghrib</label>
+      </section>
+    </div>
+    <p class="sheet-note">Tes réglages sont enregistrés automatiquement sur cet appareil.</p>
+  </div>
+</dialog>
+
+<script src="js/engine.js"></script>
+<script src="js/cities.js"></script>
+<script src="quran/meta.js"></script>
+<script src="js/mosques.js"></script>
+<script src="js/app.js"></script>
+<script src="js/pageflip.js"></script>
+<script src="js/quran.js"></script>
+<script src="js/tafsir.js"></script>
+<script src="js/priere-audio.js"></script>
+<script src="js/fiches.js"></script>
+<script src="js/learn.js"></script>
+<script src="js/moments-data.js"></script>
+<script src="js/moments.js"></script>
+<script src="hadith/meta.js"></script>
+<script src="js/hadiths.js"></script>
+<script src="quran/plan-data.js"></script>
+<script src="js/suivi.js"></script>
+<script src="js/telecharger.js"></script>
+<script src="js/motion.js"></script>
+<script src="js/tv.js"></script>
+</body>
+</html>

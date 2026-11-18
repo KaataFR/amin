@@ -1,0 +1,98 @@
+/* Explication d'un verset : petit bouton « livre » et fenêtre de lecture */
+
+/* ---------- Bouton « Explication » (à côté de l'écoute) ---------- */
+.vb-explain, .l-explain {
+  width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; padding: 0; flex: none;
+  background: transparent; cursor: pointer;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+.vb-explain { border: 1px solid color-mix(in srgb, var(--frame) 60%, transparent); color: var(--mark); }
+.vb-explain:hover { background: color-mix(in srgb, var(--frame) 18%, transparent); }
+.l-explain { border: 1px solid var(--gold-line); color: var(--gold); }
+.l-explain:hover { background: var(--gold-faint); }
+.vb-explain svg, .l-explain svg { width: 18px; height: 18px; }
+.qv-top { gap: 8px; align-items: center; }
+@media (pointer: coarse) {
+  .vb-explain { width: 40px; height: 40px; }
+  .vb-explain svg { width: 20px; height: 20px; }
+}
+
+/* Mode mushaf : le numéro du verset ouvre l'explication */
+.aya-mark { cursor: pointer; border-radius: 50%; transition: background .2s ease, color .2s ease; }
+.aya-mark:hover { background: color-mix(in srgb, var(--mark) 22%, transparent); }
+.aya-mark:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
+
+/* ---------- Fenêtre ---------- */
+#tafsirSheet { width: min(640px, 100%); }
+.tf-headtext { min-width: 0; }
+.tf-headtext h2 { font-size: 20px; }
+.tf-ref { margin: 2px 0 0; color: var(--gold); font-size: 14.5px; }
+.tf-nav {
+  flex: none; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px;
+  padding: 8px 24px; border-bottom: 1px solid var(--gold-faint); background: rgba(6, 13, 34, .35);
+}
+.tf-nav .btn { min-height: 42px; padding: 7px 14px; gap: 6px; }
+.tf-nav .btn svg { width: 16px; height: 16px; color: var(--gold); }
+.tf-nav .btn[disabled] { opacity: .4; cursor: default; }
+.tf-pos { text-align: center; color: var(--mist); font-size: 14px; }
+#tafsirSheet .sheet-body { padding-top: 16px; }
+
+.tf-wait { margin: 20px 0; color: var(--mist); font-size: 15px; }
+
+/* Le verset */
+.tf-verse {
+  margin: 0 0 6px; padding: 18px 18px 16px !important; border: 1px solid var(--gold-line) !important; border-radius: 18px;
+  background: rgba(27, 53, 102, .32);
+}
+.tf-v-ar { margin: 0 0 8px; direction: rtl; text-align: right; font-family: 'Amiri Quran', var(--font-ar); font-size: 28px; line-height: 2; color: var(--ivory); }
+.tf-v-ph { margin: 0 0 10px; color: var(--mist); font-style: italic; font-size: 15px; line-height: 1.55; }
+.tf-v-tr { margin: 0; font-size: 17px; line-height: 1.6; }
+.tf-v-src { margin: 6px 0 0; color: var(--mist); font-size: 12.5px; }
+.tf-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.tf-actions .btn { min-height: 44px; }
+.tf-actions .tf-listen svg { width: 18px; height: 18px; color: var(--gold); }
+
+/* Titres de section */
+.tf-sec h3 { margin: 0 0 10px; }
+.tf-group { margin: 0 0 12px; padding: 8px 12px; border-left: 3px solid var(--zellige); background: rgba(73, 184, 168, .08); border-radius: 0 10px 10px 0; color: var(--mist); font-size: 14.5px; }
+.tf-sec p { margin: 0 0 12px; line-height: 1.7; font-size: 16.5px; max-width: 62ch; }
+.tf-li { position: relative; padding-left: 18px; }
+.tf-li::before { content: ''; position: absolute; left: 3px; top: .72em; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+.tf-ar-line { direction: rtl; text-align: right; font-family: 'Amiri Quran', var(--font-ar); font-size: 22px !important; line-height: 2; color: var(--gold); max-width: none !important; }
+.tf-term { font-style: italic; color: var(--ivory); }
+
+/* Contexte */
+.tf-where { color: var(--mist); font-size: 15px !important; }
+.tf-ctx-row { display: grid; gap: 10px; }
+.tf-ctx {
+  display: grid; gap: 6px; text-align: left; width: 100%; padding: 12px 14px;
+  background: rgba(6, 13, 34, .4); border: 1px solid var(--gold-faint); border-radius: 14px; color: var(--ivory);
+  transition: border-color .2s ease, background .2s ease; cursor: pointer;
+}
+.tf-ctx:hover, .tf-ctx:focus-visible { border-color: var(--gold); background: rgba(27, 53, 102, .35); }
+.tf-ctx-k { color: var(--gold); font-size: 13.5px; }
+.tf-ctx-ar { direction: rtl; text-align: right; font-family: 'Amiri Quran', var(--font-ar); font-size: 21px; line-height: 1.9; }
+.tf-ctx-tr { color: var(--mist); font-size: 15px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.tf-ctx-go { color: var(--ivory); font-size: 13.5px; text-decoration: underline; text-decoration-color: var(--gold-line); text-underline-offset: 3px; }
+
+/* Notes et approfondissements repliables */
+.tf-notes, .tf-more { border: 1px solid var(--gold-faint); border-radius: 14px; margin: 0 0 10px; background: rgba(6, 13, 34, .3); }
+.tf-notes summary, .tf-more summary { cursor: pointer; padding: 13px 16px; min-height: 48px; display: flex; align-items: center; font-size: 16px; list-style: none; }
+.tf-notes summary::-webkit-details-marker, .tf-more summary::-webkit-details-marker { display: none; }
+.tf-notes summary::after, .tf-more summary::after { content: ''; margin-left: auto; width: 9px; height: 9px; border-right: 2px solid var(--gold); border-bottom: 2px solid var(--gold); transform: rotate(45deg); transition: transform .2s ease; }
+.tf-notes[open] summary::after, .tf-more[open] summary::after { transform: rotate(-135deg); }
+.tf-notes[open] summary, .tf-more[open] summary { border-bottom: 1px solid var(--gold-faint); }
+.tf-note, .tf-more-body { padding: 12px 16px; }
+.tf-note { margin: 0; color: var(--mist); font-size: 15px !important; }
+.tf-more-body p { max-width: none; font-size: 15.5px; }
+.tf-more-body .hint { font-size: 13.5px; }
+
+.tf-src { margin: 18px 0 0; color: var(--mist); font-size: 13px; line-height: 1.6; max-width: 60ch; }
+
+@media (max-width: 600px) {
+  .tf-nav { padding: 8px 12px; }
+  .tf-nav .btn span { display: none; }
+  .tf-nav .btn { min-width: 48px; justify-content: center; }
+  .tf-v-ar { font-size: 25px; }
+  .tf-verse { padding: 14px 14px 12px !important; }
+}

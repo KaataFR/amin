@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080C1A">
+<link rel="icon" href="icons/icon-32.png">
+<title>Amin</title>
+<!-- Interface télé d'Amin (app Google TV) : tout se pilote à la télécommande. -->
+<link rel="stylesheet" href="css/apprendre.css">
+<link rel="stylesheet" href="tv/tv.css">
+</head>
+<body>
+<div class="tv" id="tv">
+  <nav class="rail" id="rail" aria-label="Menu">
+    <div class="brand" aria-hidden="true">
+      <svg viewBox="0 0 40 40"><g fill="none" stroke="#D9B76E" stroke-width="2" stroke-linejoin="round"><rect x="11.5" y="11.5" width="17" height="17"/><rect x="11.5" y="11.5" width="17" height="17" transform="rotate(45 20 20)"/></g><circle cx="20" cy="20" r="4.2" fill="#D9B76E"/></svg>
+      <span class="brand-fr">Amin</span><span class="brand-ar" lang="ar">آمِين</span>
+    </div>
+    <button class="rail-i" type="button" data-page="home"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span>Horaires</span></button>
+    <button class="rail-i" type="button" data-page="coran"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C9.8 5 7 4.6 4 5v13c3-.4 5.8 0 8 1.5 2.2-1.5 5-1.9 8-1.5V5c-3-.4-5.8 0-8 1.5Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 6.5v13" stroke="currentColor" stroke-width="1.6"/></svg><span>Coran</span></button>
+    <button class="rail-i" type="button" data-page="reciter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 3.8a8.5 8.5 0 1 0 5 14.5A7.2 7.2 0 0 1 15.5 3.8Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M17 9l.8 1.7 1.7.8-1.7.8L17 14l-.8-1.7-1.7-.8 1.7-.8L17 9Z" fill="currentColor"/></svg><span>À réciter</span></button>
+    <button class="rail-i" type="button" data-page="hadiths"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M6.5 3.5H17a1.5 1.5 0 0 1 1.5 1.5v15.5l-3-2-3 2-3-2-3 2V5a1.5 1.5 0 0 1 1.5-1.5Z"/><path d="M9.5 8.5h6M9.5 12h6"/></g></svg><span>Hadiths</span></button>
+    <button class="rail-i" type="button" data-page="apprendre"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M2.5 9.5 12 5l9.5 4.5L12 14 2.5 9.5Z"/><path d="M6.5 11.6v4.2c1.6 1.5 3.4 2.2 5.5 2.2s3.9-.7 5.5-2.2v-4.2M21.5 9.5v5"/></g></svg><span>Apprendre</span></button>
+    <button class="rail-i" type="button" data-act="calme"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M14.5 4.2a6 6 0 1 0 5.3 8.6 5 5 0 0 1-5.3-8.6Z"/><path d="M3 19.5c2.2-1.6 4.4-1.6 6.6 0s4.4 1.6 6.6 0 3.7-1.2 4.8-.6"/></g></svg><span>Écran calme</span></button>
+    <span class="rail-sp"></span>
+    <button class="rail-i" type="button" data-page="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.6M12 18.6v2.6M21.2 12h-2.6M5.4 12H2.8M18.5 5.5l-1.8 1.8M7.3 16.7l-1.8 1.8M18.5 18.5l-1.8-1.8M7.3 7.3 5.5 5.5"/></g></svg><span>Réglages</span></button>
+    <div class="rail-clock" aria-live="off">
+      <b class="tnum" id="clock">--:--</b>
+      <span id="railNext"></span>
+    </div>
+  </nav>
+
+  <main class="stage" id="stage">
+    <section class="page" id="p-home" data-page="home" aria-label="Horaires"></section>
+    <section class="page" id="p-coran" data-page="coran" aria-label="Coran" hidden></section>
+    <section class="page" id="p-reciter" data-page="reciter" aria-label="À réciter" hidden></section>
+    <section class="page" id="p-hadiths" data-page="hadiths" aria-label="Hadiths" hidden></section>
+    <section class="page" id="p-apprendre" data-page="apprendre" aria-label="Apprendre" hidden></section>
+    <section class="page" id="p-settings" data-page="settings" aria-label="Réglages" hidden></section>
+  </main>
+</div>
+
+<!-- Guide Apprendre : rendu par js/learn.js, affiché dans une fenêtre de lecture -->
+<div class="layer read learn-layer" id="learnLayer" hidden>
+  <header class="read-top">
+    <div class="read-title"><p class="read-kicker">Apprendre</p><h2 id="learnTitle"></h2></div>
+    <div class="read-actions" id="learnActions"></div>
+  </header>
+  <div class="read-body" id="learnBody" data-read tabindex="-1">
+    <nav id="learnNav" hidden></nav>
+    <article class="learn-content" id="learnContent"></article>
+  </div>
+  <p class="keys" id="learnKeys"></p>
+</div>
+<dialog class="fig-zoom" id="figZoom" aria-label="Illustration agrandie">
+  <img id="figZoomImg" alt="">
+  <p id="figZoomCap"></p>
+</dialog>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="js/engine.js"></script>
+<script src="js/cities.js"></script>
+<script src="quran/meta.js"></script>
+<script src="hadith/meta.js"></script>
+<script src="js/moments-data.js"></script>
+<script src="js/priere-audio.js"></script>
+<script src="js/fiches.js"></script>
+<script src="tv/shell.js"></script>
+<script src="tv/home.js"></script>
+<script src="tv/quran.js"></script>
+<script src="tv/reading.js"></script>
+<script src="tv/settings.js"></script>
+<script src="js/mosques.js"></script>
+<script src="tv/mosques.js"></script>
+<script src="js/learn.js"></script>
+<script src="tv/calme.js"></script>
+<script src="tv/start.js"></script>
+</body>
+</html>
